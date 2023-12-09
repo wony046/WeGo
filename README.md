@@ -1,13 +1,6 @@
 # limo_application.
 LIMO Application by WeGo-Robotics
 
-### Outline
-* LIMO에 사용 가능한 Application
-* Ubuntu 18.04, Python 2.7, OpenCV 4.1.1 사용
-* /cmd_vel, /scan Topic 사용
-* 실시간 파라미터 변경을 위한 Dynamic Reconfigure 포함
-* 동작을 위한 launch파일 포함
-
 ### How to use
 * IP주소 확인하는 방법
   * Terminal에서 아래 명령어 입력
