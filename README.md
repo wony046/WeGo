@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# WeGo
-=======
 # limo_application
 LIMO Application by WeGo-Robotics
 
