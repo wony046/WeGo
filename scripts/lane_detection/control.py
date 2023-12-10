@@ -34,38 +34,35 @@ class LimoController:
         rospy.init_node('limo_control', anonymous=True)
         self.LIMO_WHEELBASE = 0.2
         self.distance_to_ref = 0
-        self.crosswalk_detected = False
-        self.yolo_object = "green"
+        #self.crosswalk_detected = False
+        #self.yolo_object = "green"
         self.e_stop = "Safe"
-        self.is_pedestrian_stop_available = True
-        self.pedestrian_stop_time = 5.0
-        self.pedestrian_stop_last_time = rospy.Time.now().to_sec()
-        self.yolo_object_last_time = rospy.Time.now().to_sec()
-        self.bbox_size = [0, 0]
+        #self.is_pedestrian_stop_available = True
+        #self.pedestrian_stop_time = 5.0
+        #self.pedestrian_stop_last_time = rospy.Time.now().to_sec()
+        #self.yolo_object_last_time = rospy.Time.now().to_sec()
+        #self.bbox_size = [0, 0]
         self.limo_mode = "ackermann"
         self.stay = 0
-	self.marker_0 = 0
-	self.marker_1 = 0
-	self.marker_2 = 0
-	self.marker_3 = 0
+        self.marker_0 = 0
+        self.marker_1 = 0
+        self.marker_2 = 0
+        self.marker_3 = 0
+
+
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
         srv = Server(controlConfig, self.reconfigure_callback)
         rospy.Subscriber("limo_status", LimoStatus, self.limo_status_callback)
         rospy.Subscriber("/limo/lane_x", Int32, self.lane_x_callback)
-        rospy.Subscriber("/limo/crosswalk_y", Int32, self.crosswalk_y_callback)
-        rospy.Subscriber("/limo/yolo_object", ObjectArray, self.yolo_object_callback)
+        #rospy.Subscriber("/limo/crosswalk_y", Int32, self.crosswalk_y_callback)
+        #rospy.Subscriber("/limo/yolo_object", ObjectArray, self.yolo_object_callback)
         rospy.Subscriber("/limo/lidar_warning", String, self.lidar_warning_callback)
         self.drive_pub = rospy.Publisher(rospy.get_param("~control_topic_name", "/cmd_vel"), Twist, queue_size=1)
         rospy.Timer(rospy.Duration(0.03), self.drive_callback)
 
     # return float
-    def calcTimeFromDetection(self, _last_detected_time):
-        '''
-            마지막 검출 시간부터 흐른 시간 확인하는 함수
-        '''
-        return rospy.Time.now().to_sec() - _last_detected_time
-
+    
     # ==============================================
     #               Callback Functions
     # ==============================================
@@ -104,11 +101,11 @@ class LimoController:
                     self.marker_2 = 1
                 # id가 3일 경우
                 elif marker.id == 3:
- 		    self.marker_2 = 1
+                    self.marker_2 = 1
 	
-	else:
-	    self.marker_0 = 0
-	    self.marker_1 = 0
+        else:
+            self.marker_0 = 0
+            self.marker_1 = 0
                  
 
 
@@ -118,17 +115,6 @@ class LimoController:
         '''
         self.e_stop = _data.data
 
-    def yolo_object_callback(self, _data):
-        '''
-            신호등 또는 표지판 상태 저장
-            중간에 일부 끊어질 수 있으므로, 마지막으로 인식된 시간도 함께 저장
-        '''
-        if len(_data.Objects) == 0:
-            pass
-        else:
-            self.yolo_object = _data.Objects[0].class_name
-            self.yolo_object_last_time = rospy.Time.now().to_sec()
-            self.bbox_size = [_data.Objects[0].xmin_ymin_xmax_ymax[2] - _data.Objects[0].xmin_ymin_xmax_ymax[0], _data.Objects[0].xmin_ymin_xmax_ymax[3] - _data.Objects[0].xmin_ymin_xmax_ymax[1]]  # 왼쪽 상단 x y, 오른쪽 하단 x, y
 
     def lane_x_callback(self, _data):
         '''
@@ -139,16 +125,6 @@ class LimoController:
         else:
             self.distance_to_ref = self.REF_X - _data.data
             self.stay = self.REF_X - _data.data   
-    def crosswalk_y_callback(self, _data):
-        '''
-            횡단보도 검출 여부 및 거리 저장
-        '''
-        if _data.data == -1:
-            self.crosswalk_detected = False
-            self.crosswalk_distance = _data.data
-        else:
-            self.crosswalk_detected = True
-            self.crosswalk_distance = _data.data
 
     def reconfigure_callback(self, _config, _level):
         '''
@@ -168,13 +144,6 @@ class LimoController:
             입력된 데이터를 종합하여,
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
-        if self.yolo_object != "green" and self.calcTimeFromDetection(self.yolo_object_last_time) > 3.0:
-            self.yolo_object = "green"
-            self.bbox_size = [0, 0]
-
-        if self.calcTimeFromDetection(self.pedestrian_stop_last_time) > 20.0:
-            self.is_pedestrian_stop_available = True
-
         drive_data = Twist()
         drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
         #rospy.loginfo("OFF_CENTER, Lateral_Gain = {}, {}".format(self.distance_to_ref, self.LATERAL_GAIN))
@@ -185,40 +154,16 @@ class LimoController:
                 drive_data.linear.x = 0.0
                 drive_data.angular.z = 0.0
                 rospy.logwarn("Obstacle Detected, Stop!")
-
-            elif self.yolo_object == "yellow" or self.yolo_object == "red":
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
-                rospy.logwarn("Traffic light is Red or Yellow, Stop!")
-
+            
             elif self.marker_0 == 1:
                 drive_data.linear.x = 0.0
                 drive_data.angular.z = 0.0
                 rospy.logwarn("marker 1 is there , Stop!")
 
-
-
             elif self.marker_1 == 1:
                 drive_data.linear.x = 0.0
                 drive_data.angular.z = 0.0
                 rospy.logwarn("marker 1 is there , Stop!")
-
-
-            # elif self.crosswalk_detected:
-            #     drive_data.linear.x = 0.0
-            #     rospy.logwarn("Crosswalk Detected, Stop!")
-
-            elif self.yolo_object == "slow":
-                drive_data.linear.x = self.BASE_SPEED / 2
-                rospy.logwarn("Slow Traffic Sign Detected, Slow Down!")
-
-            elif self.yolo_object == "pedestrian" and self.is_pedestrian_stop_available and self.bbox_size[0] > self.PEDE_STOP_WIDTH:
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
-                self.is_pedestrian_stop_available = False
-                self.pedestrian_stop_last_time = rospy.Time.now().to_sec()
-                rospy.logwarn("Pedestrian Traffic Sign Detected, Stop {} Seconds!".format(self.pedestrian_stop_time))
-                rospy.sleep(rospy.Duration(self.pedestrian_stop_time))
 
             else:
                 drive_data.linear.x = self.BASE_SPEED
