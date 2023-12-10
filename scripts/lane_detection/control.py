@@ -43,17 +43,16 @@ class LimoController:
         #self.yolo_object_last_time = rospy.Time.now().to_sec()
         #self.bbox_size = [0, 0]
         self.limo_mode = "ackermann"
-        self.stay = 0
-
         
+        self.stay = 0
+        '''
         self.marker_0 = 0
         self.marker_1 = 0
         self.marker_2 = 0
         self.marker_3 = 0
-        
-
+        '''
         self.marker_last_seen = {}
-        self.marker = False
+        self.marker_stop = False
 
 
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
@@ -92,32 +91,39 @@ class LimoController:
                 rospy.loginfo("Mode Changed --> Differential Drive")
 
     def marker_CB(self, data):
-        current_time = rospy.Time.now().to_sec()
+        current_time = rospy.Time.now().to_sec() 
         # data.markers 문자열의 길이가 0이 아닐 경우 조건문 실행
         if len(data.markers) != 0:  
+            for marker in data.markers: 
             # data.markers 에 있는 마커 정보를 처리
-            for marker in data.markers:
-                self.marker_last_seen[marker.id] = current_time
+                self.marker_last_seen[marker.id] = current_time 
+                #각 디셔너리에 마커 아이디랑 인식 시간을 기록
+
+                
+            
+            '''
                 # id가 0번일 경우
-                if marker.id == 0:
+                if marker.id == 0: #정지
                     self.marker_0 = 1
                 # id가 1번일 경우
-                elif marker.id == 1:
+                elif marker.id == 1: #오른쪽
                     self.marker_1 = 1
                 # id가 2번일 경우
-                elif marker.id == 2:
+                elif marker.id == 2: #왼쪽
                     self.marker_2 = 1
-                # id가 3일 경우
-                elif marker.id == 3:
+                # id가 3일 경우 
+                elif marker.id == 3: #주차
                     self.marker_3 = 1
-	            
+            '''     
+                
         else:
+            '''
             self.marker_0 = 0
             self.marker_1 = 0
             self.marker_2 = 0
             self.marker_3 = 0
-                 
-
+            '''
+            self.marker_last_seen = {}
 
     def lidar_warning_callback(self, _data):
         '''
@@ -161,31 +167,42 @@ class LimoController:
         #rospy.loginfo("Bbox Size = {}, Bbox_width_min = {}".format(self.bbox_size, self.PEDE_STOP_WIDTH))
 
         try:
-            for marker_id, last_seen in self.marker_last_seen.items():
-                if current_time - last_seen < 3:  # 마지막으로 마커가 인식된 후 3초 이내인 경우
-                    marker = True
-                    break
-            
-            if (marker_id == 1 and marker == False):
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
-                rospy.sleep(1.0)
-                rospy.logwarn("marker 1 is there , Stop!")
-
-            elif (marker_id == 2 and marker == False):
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
-                rospy.sleep(1.0)
-                rospy.logwarn("marker 2 is there , Stop!")
-        
-            else:
-                drive_data.linear.x = self.BASE_SPEED
-                rospy.loginfo("All Clear, Just Drive!")
-            
             if self.e_stop == "Warning":
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
                     rospy.logwarn("Obstacle Detected, Stop!")
+            
+            else:
+                drive_data.linear.x = self.BASE_SPEED
+                rospy.loginfo("All Clear, Just Drive!")
+
+            for marker_id, last_seen in self.marker_last_seen.items():
+                if (marker_id == 0 and self.marker_stop == False):
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
+                    if current_time - last_seen < 3:  # 마지막으로 마커가 인식된 후 3초 이내인 경우
+                        self.marker_stop = True
+                    rospy.sleep(1.0)
+                    rospy.logwarn("marker 1 is there , Stop!")
+
+                elif (marker_id == 1 and self.marker_right == False):
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
+                    rospy.sleep(1.0)
+                    rospy.logwarn("marker 2 is there , Right!")
+
+                elif (marker_id == 2 and self.marker_left == False):
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
+                    rospy.sleep(1.0)
+                    rospy.logwarn("marker 3 is there , Left!")
+
+                elif (marker_id == 3 and self.marker_parking == False):
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
+                    rospy.sleep(1.0)
+                    rospy.logwarn("marker 4 is there , Parking!")   
+                break
 
             if self.limo_mode == "diff":
                 self.drive_pub.publish(drive_data)
