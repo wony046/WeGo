@@ -50,8 +50,7 @@ class LimoController:
         self.marker_2 = 0
         self.marker_3 = 0
         self.marker_stop = False
-        self.marker_0_detected_time = 0
-        self.marker_0_last_processed_time = 0
+        
 
 
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
@@ -98,9 +97,7 @@ class LimoController:
             # data.markers 에 있는 마커 정보를 처리
                 # id가 0번일 경우
                 if marker.id == 0:  # 정지 마커
-                    if current_time - self.marker_0_last_processed_time > 4:
                         self.marker_0 = 1
-                        self.marker_0_detected_time = current_time
                 # id가 1번일 경우
                 elif marker.id == 1: #오른쪽
                     self.marker_1 = 1
@@ -154,7 +151,7 @@ class LimoController:
         '''
         
         
-        current_time = rospy.Time.now().to_sec()
+        current_time = rospy.Time.now()
         drive_data = Twist()
         drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
         #rospy.loginfo("OFF_CENTER, Lateral_Gain = {}, {}".format(self.distance_to_ref, self.LATERAL_GAIN))
@@ -167,36 +164,31 @@ class LimoController:
                 rospy.logwarn("Obstacle Detected, Stop!")
             
             else:
-                if self.marker_0 == 1 and current_time - self.marker_0_detected_time < 1:
-                    rospy.logwarn("Marker 0 detected, stopping for 1 second")
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-                elif current_time - self.marker_0_detected_time >= 1:
-                    if current_time - self.marker_0_last_processed_time > 4:
-                        self.marker_0_last_processed_time = current_time
-                    drive_data.linear.x = self.BASE_SPEED
-
-
+                if (self.marker_0 == 1):
+                    while (True):
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        rospy.logwarn("marker 0 is there , Stop!")
+                        if ((rospy.Time.now() - current_time).to_sec() < 1):
+                            break
+                
                 elif (self.marker_1 == 1):
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
-                    rospy.logwarn("marker 2 is there , Right!")
+                    rospy.logwarn("marker 1 is there , Right!")
                     rospy.sleep(1.0)
                         
-
                 elif (self.marker_2 == 1):
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
-                    rospy.logwarn("marker 3 is there , Left!")
+                    rospy.logwarn("marker 2 is there , Left!")
                     rospy.sleep(1.0)
                         
-
                 elif (self.marker_3 == 1):
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
-                    rospy.logwarn("marker 4 is there , Parking!") 
+                    rospy.logwarn("marker 3 is there , Parking!") 
                     rospy.sleep(1.0)      
-                    
                 
                 else:
                     drive_data.linear.x = self.BASE_SPEED
