@@ -98,7 +98,6 @@ class LimoController:
             # data.markers 에 있는 마커 정보를 처리
             for marker in data.markers:
                 self.marker_last_seen[marker.id] = current_time
-                '''
                 # id가 0번일 경우
                 if marker.id == 0:
                     self.marker_0 = 1
@@ -111,12 +110,12 @@ class LimoController:
                 # id가 3일 경우
                 elif marker.id == 3:
                     self.marker_3 = 1
-	            '''
+	            
         else:
-            self.marker_last_seen = {}
-
-        
-            
+            self.marker_0 = 0
+            self.marker_1 = 0
+            self.marker_2 = 0
+            self.marker_3 = 0
                  
 
 
@@ -165,22 +164,23 @@ class LimoController:
             for marker_id, last_seen in self.marker_last_seen.items():
                 if current_time - last_seen < 3:  # 마지막으로 마커가 인식된 후 3초 이내인 경우
                     marker = True
+                    break
             
-                elif (marker_id == 1 and marker == False):
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-                    rospy.sleep(1.0)
-                    rospy.logwarn("marker 1 is there , Stop!")
+            if (marker_id == 1 and marker == False):
+                drive_data.linear.x = 0.0
+                drive_data.angular.z = 0.0
+                rospy.sleep(1.0)
+                rospy.logwarn("marker 1 is there , Stop!")
 
-                elif (marker_id == 2 and marker == False):
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-                    rospy.sleep(1.0)
-                    rospy.logwarn("marker 2 is there , Stop!")
-
-                else:
-                    drive_data.linear.x = self.BASE_SPEED
-                    rospy.loginfo("All Clear, Just Drive!")
+            elif (marker_id == 2 and marker == False):
+                drive_data.linear.x = 0.0
+                drive_data.angular.z = 0.0
+                rospy.sleep(1.0)
+                rospy.logwarn("marker 2 is there , Stop!")
+        
+            else:
+                drive_data.linear.x = self.BASE_SPEED
+                rospy.loginfo("All Clear, Just Drive!")
             
             if self.e_stop == "Warning":
                     drive_data.linear.x = 0.0
