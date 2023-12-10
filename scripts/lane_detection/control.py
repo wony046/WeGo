@@ -44,10 +44,16 @@ class LimoController:
         #self.bbox_size = [0, 0]
         self.limo_mode = "ackermann"
         self.stay = 0
+
+        '''
         self.marker_0 = 0
         self.marker_1 = 0
         self.marker_2 = 0
         self.marker_3 = 0
+        '''
+
+        self.marker_last_seen = {}
+        self.marker = False
 
 
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
@@ -86,10 +92,13 @@ class LimoController:
                 rospy.loginfo("Mode Changed --> Differential Drive")
 
     def marker_CB(self, data):
+        current_time = rospy.Time.now().to_sec()
         # data.markers 문자열의 길이가 0이 아닐 경우 조건문 실행
         if len(data.markers) != 0:  
             # data.markers 에 있는 마커 정보를 처리
             for marker in data.markers:
+                self.marker_last_seen[marker.id] = current_time
+                '''
                 # id가 0번일 경우
                 if marker.id == 0:
                     self.marker_0 = 1
@@ -101,11 +110,13 @@ class LimoController:
                     self.marker_2 = 1
                 # id가 3일 경우
                 elif marker.id == 3:
-                    self.marker_2 = 1
-	
+                    self.marker_3 = 1
+	            '''
         else:
-            self.marker_0 = 0
-            self.marker_1 = 0
+            self.marker_last_seen = {}
+
+        
+            
                  
 
 
@@ -144,30 +155,37 @@ class LimoController:
             입력된 데이터를 종합하여,
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
+        current_time = rospy.Time.now().to_sec()
         drive_data = Twist()
         drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
         #rospy.loginfo("OFF_CENTER, Lateral_Gain = {}, {}".format(self.distance_to_ref, self.LATERAL_GAIN))
         #rospy.loginfo("Bbox Size = {}, Bbox_width_min = {}".format(self.bbox_size, self.PEDE_STOP_WIDTH))
 
         try:
-            if self.e_stop == "Warning":
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
-                rospy.logwarn("Obstacle Detected, Stop!")
+            for marker_id, last_seen in self.marker_last_seen.items():
+                if current_time - last_seen < 3:  # 마지막으로 마커가 인식된 후 3초 이내인 경우
+                    marker = True
             
-            elif self.marker_0 == 1:
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
-                rospy.logwarn("marker 1 is there , Stop!")
+                elif (marker_id == 1 and marker == False):
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
+                    rospy.sleep(1.0)
+                    rospy.logwarn("marker 1 is there , Stop!")
 
-            elif self.marker_1 == 1:
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
-                rospy.logwarn("marker 1 is there , Stop!")
+                elif (marker_id == 2 and marker == False):
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
+                    rospy.sleep(1.0)
+                    rospy.logwarn("marker 2 is there , Stop!")
 
-            else:
-                drive_data.linear.x = self.BASE_SPEED
-                rospy.loginfo("All Clear, Just Drive!")
+                else:
+                    drive_data.linear.x = self.BASE_SPEED
+                    rospy.loginfo("All Clear, Just Drive!")
+            
+            if self.e_stop == "Warning":
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
+                    rospy.logwarn("Obstacle Detected, Stop!")
 
             if self.limo_mode == "diff":
                 self.drive_pub.publish(drive_data)
@@ -193,3 +211,11 @@ if __name__ == '__main__':
         run()
     except KeyboardInterrupt:
         print("program down") 
+
+
+
+
+
+
+
+
