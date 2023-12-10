@@ -163,13 +163,15 @@ class LimoController:
             
             else:
                 if self.marker_0 == 1:
-                    if not self.marker_stop and current_time - self.marker_0_detected_time < 3:
-                        rospy.logwarn("marker 1 is there, Stop!")
+                    time_since_last_processed = current_time - self.marker_0_last_processed_time
+                    if not self.marker_stop and time_since_last_processed > 4:
+                        rospy.logwarn("Marker 0 detected, stopping for 1 second")
                         drive_data.linear.x = 0.0
                         drive_data.angular.z = 0.0
+                        rospy.sleep(1.0)  # 1초 동안 멈춤
                         self.marker_stop = True
-                        rospy.sleep(1.0)
-                elif self.marker_stop and current_time - self.marker_0_detected_time >= 3:
+                        self.marker_0_last_processed_time = current_time
+                    elif self.marker_stop and time_since_last_processed > 4:
                         self.marker_stop = False
 
 
