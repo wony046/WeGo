@@ -152,6 +152,7 @@ class LimoController:
         
         
         current_time = rospy.Time.now()
+        print(current_time)
         drive_data = Twist()
         drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
         #rospy.loginfo("OFF_CENTER, Lateral_Gain = {}, {}".format(self.distance_to_ref, self.LATERAL_GAIN))
@@ -161,38 +162,38 @@ class LimoController:
             if self.e_stop == "Warning":
                 drive_data.linear.x = 0.0
                 drive_data.angular.z = 0.0
-                rospy.logwarn("Obstacle Detected, Stop!")
+                #rospy.logwarn("Obstacle Detected, Stop!")
             
             else:
                 if (self.marker_0 == 1):
                     while (True):
                         drive_data.linear.x = 0.0
                         drive_data.angular.z = 0.0
-                        rospy.logwarn("marker 0 is there , Stop!")
+                        #rospy.logwarn("marker 0 is there , Stop!")
                         if ((rospy.Time.now() - current_time).to_sec() < 1):
                             break
                 
                 elif (self.marker_1 == 1):
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
-                    rospy.logwarn("marker 1 is there , Right!")
-                    rospy.sleep(1.0)
+                    #rospy.logwarn("marker 1 is there , Right!")
+                    
                         
                 elif (self.marker_2 == 1):
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
                     rospy.logwarn("marker 2 is there , Left!")
-                    rospy.sleep(1.0)
+                    
                         
                 elif (self.marker_3 == 1):
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
                     rospy.logwarn("marker 3 is there , Parking!") 
-                    rospy.sleep(1.0)      
+                          
                 
                 else:
                     drive_data.linear.x = self.BASE_SPEED
-                    rospy.loginfo("All Clear, Just Drive!")
+                    #rospy.loginfo("All Clear, Just Drive!")
 
             if self.limo_mode == "diff":
                 self.drive_pub.publish(drive_data)
