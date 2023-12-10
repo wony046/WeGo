@@ -171,38 +171,41 @@ class LimoController:
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
                     rospy.logwarn("Obstacle Detected, Stop!")
-            
+
+            elif (len(self.marker_last_seen.items()) != 0):
+                for marker_id, last_seen in self.marker_last_seen.items():
+                    if (marker_id == 0 and self.marker_stop == False):
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        if current_time - last_seen < 3:  # 마지막으로 마커가 인식된 후 3초 이내인 경우
+                            self.marker_stop = True
+                        rospy.logwarn("marker 1 is there , Stop!")
+                        rospy.sleep(1.0)
+
+                    elif (marker_id == 1):
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        rospy.logwarn("marker 2 is there , Right!")
+                        rospy.sleep(1.0)
+                        
+
+                    elif (marker_id == 2):
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        rospy.logwarn("marker 3 is there , Left!")
+                        rospy.sleep(1.0)
+                        
+
+                    elif (marker_id == 3):
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        rospy.logwarn("marker 4 is there , Parking!") 
+                        rospy.sleep(1.0)      
+                    break
+                
             else:
                 drive_data.linear.x = self.BASE_SPEED
                 rospy.loginfo("All Clear, Just Drive!")
-
-            for marker_id, last_seen in self.marker_last_seen.items():
-                if (marker_id == 0 and self.marker_stop == False):
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-                    if current_time - last_seen < 3:  # 마지막으로 마커가 인식된 후 3초 이내인 경우
-                        self.marker_stop = True
-                    rospy.sleep(1.0)
-                    rospy.logwarn("marker 1 is there , Stop!")
-
-                elif (marker_id == 1 and self.marker_right == False):
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-                    rospy.sleep(1.0)
-                    rospy.logwarn("marker 2 is there , Right!")
-
-                elif (marker_id == 2 and self.marker_left == False):
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-                    rospy.sleep(1.0)
-                    rospy.logwarn("marker 3 is there , Left!")
-
-                elif (marker_id == 3 and self.marker_parking == False):
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-                    rospy.sleep(1.0)
-                    rospy.logwarn("marker 4 is there , Parking!")   
-                break
 
             if self.limo_mode == "diff":
                 self.drive_pub.publish(drive_data)
