@@ -169,7 +169,7 @@ class LimoController:
                         drive_data.angular.z = 0.0
                         self.marker_stop = True
                         rospy.sleep(1.0)
-                    elif self.marker_stop and current_time - self.marker_0_detected_time >= 3:
+                elif self.marker_stop and current_time - self.marker_0_detected_time >= 3:
                         self.marker_stop = False
 
 
@@ -222,3 +222,11 @@ if __name__ == '__main__':
         run()
     except KeyboardInterrupt:
         print("program down") 
+
+
+
+
+
+
+
+
