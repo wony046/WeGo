@@ -51,6 +51,7 @@ class LimoController:
         self.marker_3 = 0
         self.marker_stop = False
         self.marker_0_detected_time = 0
+        self.marker_0_last_processed_time = 0
 
 
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
@@ -162,7 +163,7 @@ class LimoController:
                 rospy.logwarn("Obstacle Detected, Stop!")
             
             else:
-                if self.marker_0 == 1:
+                if (self.marker_0 == 1):
                     time_since_last_processed = current_time - self.marker_0_last_processed_time
                     if not self.marker_stop and time_since_last_processed > 4:
                         rospy.logwarn("Marker 0 detected, stopping for 1 second")
