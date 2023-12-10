@@ -69,7 +69,7 @@ class LaneDetection:
             ROI 내부 중 특정 색 영역만 검출한 이미지 (lane_threshold)
         '''
         cv2.circle(self.cropped_image, (self.x, self.y), 10, 255, -1)
-        #cv2.imshow("lane_original", self.frame)
+        cv2.imshow("lane_original", self.frame)
         cv2.imshow("lane_cropped", self.cropped_image)
         #cv2.imshow("lane_thresholded", self.thresholded_image)
         cv2.waitKey(1)
