@@ -45,12 +45,12 @@ class LimoController:
         self.limo_mode = "ackermann"
         self.stay = 0
 
-        '''
+        
         self.marker_0 = 0
         self.marker_1 = 0
         self.marker_2 = 0
         self.marker_3 = 0
-        '''
+        
 
         self.marker_last_seen = {}
         self.marker = False
