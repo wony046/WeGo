@@ -66,6 +66,7 @@ class LimoController:
         rospy.Timer(rospy.Duration(0.03), self.drive_callback)
 
     # return float
+   
     
     # ==============================================
     #               Callback Functions
@@ -96,9 +97,10 @@ class LimoController:
             for marker in data.markers: 
             # data.markers 에 있는 마커 정보를 처리
                 # id가 0번일 경우
-                if marker.id == 0: #정지
-                    self.marker_0 = 1
-                    self.marker_0_detected_time = current_time
+                if marker.id == 0:  # 정지 마커
+                    if current_time - self.marker_0_last_processed_time > 4:
+                        self.marker_0 = 1
+                        self.marker_0_detected_time = current_time
                 # id가 1번일 경우
                 elif marker.id == 1: #오른쪽
                     self.marker_1 = 1
@@ -150,6 +152,8 @@ class LimoController:
             입력된 데이터를 종합하여,
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
+        
+        
         current_time = rospy.Time.now().to_sec()
         drive_data = Twist()
         drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
@@ -163,17 +167,12 @@ class LimoController:
                 rospy.logwarn("Obstacle Detected, Stop!")
             
             else:
-                time_since_last_processed = current_time - self.marker_0_last_processed_time
-                if self.marker_0 == 1 and time_since_last_processed > 4:
+                if self.marker_0 == 1 and current_time - self.marker_0_detected_time < 1:
                     rospy.logwarn("Marker 0 detected, stopping for 1 second")
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
-                    if not self.marker_stop:
-                        rospy.sleep(1.0)  # 1초 동안 멈춤
-                        self.marker_stop = True
-                elif self.marker_stop:
-                    if time_since_last_processed > 4:
-                        self.marker_stop = False
+                elif current_time - self.marker_0_detected_time >= 1:
+                    if current_time - self.marker_0_last_processed_time > 4:
                         self.marker_0_last_processed_time = current_time
                     drive_data.linear.x = self.BASE_SPEED
 
