@@ -51,7 +51,8 @@ class LimoController:
         self.marker_3 = 0
         self.marker_stop = False
         
-
+        self.bool = False
+        self.current_time = rospy.get_time()
 
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
@@ -90,9 +91,10 @@ class LimoController:
                 rospy.loginfo("Mode Changed --> Differential Drive")
 
     def marker_CB(self, data):
-        current_time = rospy.Time.now().to_sec() 
         # data.markers 문자열의 길이가 0이 아닐 경우 조건문 실행
-        if len(data.markers) != 0:  
+        if len(data.markers) != 0:
+            self.current_time = rospy.get_time()
+            self.bool = True
             for marker in data.markers: 
             # data.markers 에 있는 마커 정보를 처리
                 # id가 0번일 경우
@@ -152,7 +154,7 @@ class LimoController:
         
         
         current_time = rospy.Time.now()
-        print(current_time)
+        # print(current_time)
         drive_data = Twist()
         drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
         #rospy.loginfo("OFF_CENTER, Lateral_Gain = {}, {}".format(self.distance_to_ref, self.LATERAL_GAIN))
@@ -166,12 +168,14 @@ class LimoController:
             
             else:
                 if (self.marker_0 == 1):
-                    while (True):
-                        drive_data.linear.x = 0.0
-                        drive_data.angular.z = 0.0
-                        #rospy.logwarn("marker 0 is there , Stop!")
-                        if ((rospy.Time.now() - current_time).to_sec() < 1):
-                            break
+                    pass_time = rospy.get_time - self.current_time
+                    if self.bool == True:
+                        if pass_time < 3:
+                            drive_data.linear.x = 0.0
+                            drive_data.angular.z = 0.0
+                            #rospy.logwarn("marker 0 is there , Stop!")
+                        else:
+                            self.bool = False                   
                 
                 elif (self.marker_1 == 1):
                     drive_data.linear.x = 0.0
