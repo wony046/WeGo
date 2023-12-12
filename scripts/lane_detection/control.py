@@ -79,7 +79,6 @@ class LimoController:
         #rospy.Subscriber("/limo/yolo_object", ObjectArray, self.yolo_object_callback)
         rospy.Subscriber("/limo/lidar_warning", String, self.lidar_warning_callback)
         self.drive_pub = rospy.Publisher(rospy.get_param("~control_topic_name", "/cmd_vel"), Twist, queue_size=1)
-        self.angle_z = rospy.Publisher("/angle_z", Int32, queue_size=1)
         rospy.Timer(rospy.Duration(0.03), self.drive_callback)
 
     # return float
@@ -164,6 +163,7 @@ class LimoController:
         else:
             self.distance_to_ref = self.REF_X - _data.data
             self.left = 0
+            
 
     def right_lane_x_callback(self, _data):
         '''
@@ -189,7 +189,7 @@ class LimoController:
             차선 기준 좌표 (카메라 픽셀 좌표계 기준) (REF_X)
         '''
         self.BASE_SPEED = _config.base_speed
-        self.LATERAL_GAIN = float(_config.lateral_gain * 0.0015)
+        self.LATERAL_GAIN = float(_config.lateral_gain * 0.0005)
         self.REF_X = _config.reference_lane_x
         self.right_REF_X = self.REF_X + 480
         self.PEDE_STOP_WIDTH = _config.pedestrian_width_min
@@ -284,9 +284,6 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
-                    self.value = round(drive_data.angular.z)
-                    self.angle_z.publish(self.value)
-                    
 
         except Exception as e:
             rospy.logwarn(e)
