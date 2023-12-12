@@ -159,25 +159,23 @@ class LimoController:
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
         if _data.data == -1:
-            ##self.left = 1
-            self.true_distance_to_ref = self.stay
+            self.left = 1
         else:
-            ##self.distance_to_ref = self.REF_X - _data.data
-            ##self.left = 0
-            self.true_distance_to_ref = self.REF_X - _data.data
-            self.stay = self.REF_X - _data.data
-
-
+            self.distance_to_ref = self.REF_X - _data.data
+            self.left = 0
 
     def right_lane_x_callback(self, _data):
         '''
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
         if _data.data == -1:
-            self.right = 1
+            ##self.right = 1
+            self.true_distance_to_ref = self.stay
         else:
-            self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
-            self.right = 0   
+            ##self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
+            ##self.right = 0   
+            self.true_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
+            self.stay = (self.right_REF_X - _data.data) * (-1)
 
 
 
@@ -284,7 +282,8 @@ class LimoController:
                     drive_data.angular.z = \
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
-                    self.drive_pub.publish(drive_data)
+                    rounded_value = round(drive_data.angular.z)
+                    self.drive_pub.publish(rounded_value)
 
         except Exception as e:
             rospy.logwarn(e)
