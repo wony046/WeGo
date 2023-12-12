@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # limo_application/scripts/lane_detection/control.py
 # WeGo LIMO Pro를 이용한 주행 코드
-# zzz
+# mk1
 
 import rospy
 import os
@@ -58,7 +58,7 @@ class LimoController:
         self.marker_111 = 0
         self.marker_222 = 0
         self.marker_333 = 0
-        
+        self.markertime_count = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -99,6 +99,7 @@ class LimoController:
                 rospy.loginfo("Mode Changed --> Differential Drive")
 
     def marker_CB(self, data):
+        self.markertime = rospy.get_time()
         # data.markers 문자열의 길이가 0이 아닐 경우 조건문 실행
         if len(data.markers) != 0:
             for marker in data.markers: 
@@ -123,14 +124,18 @@ class LimoController:
                    if self.marker_33 == 0:
                         self.marker_3 = 1
                         self.marker_33 = 1
+                
+                self.markertime_count = rospy.get_time()
+
               
         else:
-            if (self.marker_0 == 0):
-                self.marker_00 = 0
-            if (self.marker_1 == 0):
-                self.marker_11 = 0
-            if (self.marker_2 == 0):
-                self.marker_22 = 0
+            if (self.markertime - self.markertime_count <= 1):
+                if (self.marker_0 == 0):
+                    self.marker_00 = 0
+                if (self.marker_1 == 0):
+                    self.marker_11 = 0
+                if (self.marker_2 == 0):
+                    self.marker_22 = 0
 
             
             
