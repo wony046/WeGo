@@ -212,6 +212,7 @@ class LimoController:
             self.stay = self.distance_to_ref
             
         if (self.left == 1 and self.right == 0):
+            self.lane_time_ok = rospy.get_time()
             if (self.lane_time - self.lane_time_ok >= 3):
                 self.true_distance_to_ref = self.right_distance_to_ref
                 self.stay = self.right_distance_to_ref
@@ -220,7 +221,7 @@ class LimoController:
 
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
-            self.lane_time_ok = rospy.get_time()
+            
         
 
         # print(current_time)
