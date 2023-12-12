@@ -169,10 +169,13 @@ class LimoController:
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
         if _data.data == -1:
-            self.right = 1
+            ##self.right = 1
+            self.true_distance_to_ref = self.stay
         else:
-            self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
-            self.right = 0   
+            ##self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
+            ##self.right = 0   
+            self.true_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
+            self.stay = (self.right_REF_X - _data.data) * (-1)
 
 
 
@@ -196,6 +199,7 @@ class LimoController:
             입력된 데이터를 종합하여,
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
+        '''
         self.lane_time = rospy.get_time()
 
         if (self.left == 0 and self.right == 0):
@@ -217,6 +221,7 @@ class LimoController:
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
             self.lane_time_ok = rospy.get_time()
+        '''
 
         # print(current_time)
         drive_data = Twist()
