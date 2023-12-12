@@ -36,6 +36,7 @@ class LimoController:
         self.LIMO_WHEELBASE = 0.2
         self.distance_to_ref = 0
         self.rihgt_distance_to_ref = 0
+        self.true_distance_to_ref = 0
         #self.crosswalk_detected = False
         #self.yolo_object = "green"
         self.e_stop = "Safe"
@@ -48,6 +49,9 @@ class LimoController:
         
         self.stay = 0
         self.rihgt_stay = 0
+        self.right = 0
+        self.left = 0
+
         self.marker_0 = 0
         self.marker_1 = 0
         self.marker_2 = 0
@@ -69,7 +73,7 @@ class LimoController:
         srv = Server(controlConfig, self.reconfigure_callback)
         rospy.Subscriber("limo_status", LimoStatus, self.limo_status_callback)
         rospy.Subscriber("/limo/lane_x", Int32, self.lane_x_callback)
-        rospy.Subscriber("/limo/right_lane_x", Int32, self.right_lane_x_callbcak)
+        rospy.Subscriber("/limo/right_lane_x", Int32, self.right_lane_x_callback)
         #rospy.Subscriber("/limo/crosswalk_y", Int32, self.crosswalk_y_callback)
         #rospy.Subscriber("/limo/yolo_object", ObjectArray, self.yolo_object_callback)
         rospy.Subscriber("/limo/lidar_warning", String, self.lidar_warning_callback)
@@ -154,22 +158,20 @@ class LimoController:
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
         if _data.data == -1:
-            self.distance_to_ref = self.stay
+            self.left = 1
         else:
             self.distance_to_ref = self.REF_X - _data.data
-            self.stay = self.REF_X - _data.data
-        print("distance_to_ref = {}".format(self.distance_to_ref))
+            self.left = 0
 
     def right_lane_x_callback(self, _data):
         '''
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
         if _data.data == -1:
-            self.rihgt_distance_to_ref = self.right_stay
+            self.right = 1
         else:
             self.right_distance_to_ref = self.right_REF_X - _data.data
-            self.right_stay = self.right_REF_X - _data.data 
-        print("right_distance_to_ref = {}".format(self.right_distance_to_ref))
+            self.right = 0   
 
     def reconfigure_callback(self, _config, _level):
         '''
@@ -190,10 +192,21 @@ class LimoController:
             입력된 데이터를 종합하여,
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
+        if (self.left == 0 and self.right == 0):
+            self.true_distance_to_ref = self.distance_to_ref
+            self.stay = self.distance_to_ref
+        if (self.left == 0 and self.right == 1):
+            self.true_distance_to_ref = self.distance_to_ref
+            self.stay = self.distance_to_ref
+        if (self.left == 1 and self.right == 0):
+            self.true_distance_to_ref = self.right_distance_to_ref
+            self.stay = self.right_distance_to_ref
+        if (self.left == 1 and self.right == 1):
+            self.true_distance_to_ref = self.stay
+
         # print(current_time)
         drive_data = Twist()
-        
-        drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
+        drive_data.angular.z = self.true_distance_to_ref * self.LATERAL_GAIN
         #rospy.loginfo("OFF_CENTER, Lateral_Gain = {}, {}".format(self.distance_to_ref, self.LATERAL_GAIN))
         #rospy.loginfo("Bbox Size = {}, Bbox_width_min = {}".format(self.bbox_size, self.PEDE_STOP_WIDTH))
 
