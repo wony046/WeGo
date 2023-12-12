@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # limo_application/scripts/lane_detection/control.py
 # WeGo LIMO Pro를 이용한 주행 코드
-# mk1
+# mk2
 
 import rospy
 import os
@@ -129,7 +129,7 @@ class LimoController:
 
               
         else:
-            if (self.markertime - self.markertime_count <= 1):
+            if (self.markertime - self.markertime_count >= 1):
                 if (self.marker_0 == 0):
                     self.marker_00 = 0
                 if (self.marker_1 == 0):
