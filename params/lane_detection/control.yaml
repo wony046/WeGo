@@ -6,5 +6,4 @@
 base_speed:       0.26
 lateral_gain:     5
 referene_lane_x: 80
-referene_right_lane_x: 560
 pedestrian_width_min: 55
