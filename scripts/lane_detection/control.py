@@ -191,7 +191,7 @@ class LimoController:
         self.BASE_SPEED = _config.base_speed
         self.LATERAL_GAIN = float(_config.lateral_gain * 0.0015)
         self.REF_X = _config.reference_lane_x
-        self.right_REF_X = self.REF_X + 180
+        self.right_REF_X = self.REF_X + 170
         self.PEDE_STOP_WIDTH = _config.pedestrian_width_min
         return _config
 
