@@ -166,8 +166,8 @@ class LimoController:
         if _data.data == -1:
             self.rihgt_distance_to_ref = self.right_stay
         else:
-            self.right_distance_to_ref = self.REF_X - _data.data
-            self.right_stay = self.REF_X - _data.data   
+            self.right_distance_to_ref = self.right_REF_X - _data.data
+            self.right_stay = self.right_REF_X - _data.data   
 
     def reconfigure_callback(self, _config, _level):
         '''
@@ -179,6 +179,7 @@ class LimoController:
         self.BASE_SPEED = _config.base_speed
         self.LATERAL_GAIN = float(_config.lateral_gain * 0.0015)
         self.REF_X = _config.reference_lane_x
+        self.right_REF_X = _config.reference_right_lane_x
         self.PEDE_STOP_WIDTH = _config.pedestrian_width_min
         return _config
 
@@ -189,6 +190,7 @@ class LimoController:
         '''
         # print(current_time)
         drive_data = Twist()
+        
         drive_data.angular.z = self.distance_to_ref * self.LATERAL_GAIN
         #rospy.loginfo("OFF_CENTER, Lateral_Gain = {}, {}".format(self.distance_to_ref, self.LATERAL_GAIN))
         #rospy.loginfo("Bbox Size = {}, Bbox_width_min = {}".format(self.bbox_size, self.PEDE_STOP_WIDTH))
