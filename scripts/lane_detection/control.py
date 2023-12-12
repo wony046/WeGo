@@ -159,23 +159,25 @@ class LimoController:
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
         if _data.data == -1:
-            self.left = 1
+            ##self.left = 1
+            self.true_distance_to_ref = self.stay
         else:
-            self.distance_to_ref = self.REF_X - _data.data
-            self.left = 0
+            ##self.distance_to_ref = self.REF_X - _data.data
+            ##self.left = 0
+            self.true_distance_to_ref = self.REF_X - _data.data
+            self.stay = self.REF_X - _data.data
+
+
 
     def right_lane_x_callback(self, _data):
         '''
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
         if _data.data == -1:
-            ##self.right = 1
-            self.true_distance_to_ref = self.stay
+            self.right = 1
         else:
-            ##self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
-            ##self.right = 0   
-            self.true_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
-            self.stay = (self.right_REF_X - _data.data) * (-1)
+            self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
+            self.right = 0   
 
 
 
