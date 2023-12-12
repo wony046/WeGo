@@ -157,7 +157,8 @@ class LimoController:
             self.distance_to_ref = self.stay
         else:
             self.distance_to_ref = self.REF_X - _data.data
-            self.stay = self.REF_X - _data.data   
+            self.stay = self.REF_X - _data.data
+        print("distance_to_ref = {}".format(self.distance_to_ref))
 
     def right_lane_x_callback(self, _data):
         '''
@@ -167,7 +168,8 @@ class LimoController:
             self.rihgt_distance_to_ref = self.right_stay
         else:
             self.right_distance_to_ref = self.right_REF_X - _data.data
-            self.right_stay = self.right_REF_X - _data.data   
+            self.right_stay = self.right_REF_X - _data.data 
+        print("right_distance_to_ref = {}".format(self.right_distance_to_ref))
 
     def reconfigure_callback(self, _config, _level):
         '''
