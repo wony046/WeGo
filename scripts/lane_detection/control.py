@@ -170,8 +170,10 @@ class LimoController:
         if _data.data == -1:
             self.right = 1
         else:
-            self.right_distance_to_ref = self.right_REF_X - _data.data
+            self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
             self.right = 0   
+
+
 
     def reconfigure_callback(self, _config, _level):
         '''
