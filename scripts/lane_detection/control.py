@@ -200,7 +200,7 @@ class LimoController:
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
         
-        self.lane_time = rospy.get_time()
+        self.dkdkdkdk
 
         if (self.left == 0 and self.right == 0):
             self.true_distance_to_ref = self.distance_to_ref
@@ -210,10 +210,10 @@ class LimoController:
         if (self.left == 0 and self.right == 1):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
+            self.dkdkdkdk = 1
             
         if (self.left == 1 and self.right == 0):
-            self.lane_time_ok = rospy.get_time()
-            if (self.lane_time - self.lane_time_ok >= 3):
+            if (self.dkdkdkdk == 1):
                 self.true_distance_to_ref = self.right_distance_to_ref
                 self.stay = self.right_distance_to_ref
             else:
@@ -221,7 +221,7 @@ class LimoController:
 
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
-            
+            self.dkdkdkdk = 0
         
 
         # print(current_time)
