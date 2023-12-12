@@ -175,8 +175,8 @@ class LimoController:
         else:
             ##self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
             ##self.right = 0   
-            self.true_distance_to_ref = (self.rignt_REF_X - _data.data) 
-            self.stay = (self.right_REF_X - _data.data) 
+            self.true_distance_to_ref = self.right_REF_X - _data.data
+            self.stay = self.right_REF_X - _data.data
 
 
 
