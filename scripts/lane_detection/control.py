@@ -175,6 +175,7 @@ class LimoController:
 
 
 
+
     def reconfigure_callback(self, _config, _level):
         '''
             Dynamic_Reconfigure를 활용
@@ -194,6 +195,8 @@ class LimoController:
             입력된 데이터를 종합하여,
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
+        self.lane_time = rospy.get_time
+
         if (self.left == 0 and self.right == 0):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
@@ -201,10 +204,12 @@ class LimoController:
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
         if (self.left == 1 and self.right == 0):
-            self.true_distance_to_ref = self.right_distance_to_ref
-            self.stay = self.right_distance_to_ref
+            if (self.lane_time - self.lane_time_ok >= 0.3):
+                self.true_distance_to_ref = self.right_distance_to_ref
+                self.stay = self.right_distance_to_ref
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
+            self.lane_time_ok = rospy.get_time
 
         # print(current_time)
         drive_data = Twist()
