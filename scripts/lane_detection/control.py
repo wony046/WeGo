@@ -283,8 +283,7 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
-                    rounded_value = round(drive_data.angular.z)
-                    self.drive_pub.publish(rounded_value)
+                    
 
         except Exception as e:
             rospy.logwarn(e)
