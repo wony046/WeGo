@@ -189,7 +189,7 @@ class LimoController:
             차선 기준 좌표 (카메라 픽셀 좌표계 기준) (REF_X)
         '''
         self.BASE_SPEED = _config.base_speed
-        self.LATERAL_GAIN = float(_config.lateral_gain * 0.0005)
+        self.LATERAL_GAIN = float(_config.lateral_gain * 0.001)
         self.REF_X = _config.reference_lane_x
         self.right_REF_X = self.REF_X + 480
         self.PEDE_STOP_WIDTH = _config.pedestrian_width_min
