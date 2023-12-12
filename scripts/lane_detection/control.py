@@ -175,8 +175,8 @@ class LimoController:
         else:
             ##self.right_distance_to_ref = (self.right_REF_X - _data.data) * (-1)
             ##self.right = 0   
-            self.true_distance_to_ref = (self.REF_X - _data.data) 
-            self.stay = (self.REF_X - _data.data) 
+            self.true_distance_to_ref = (self.rignt_REF_X - _data.data) 
+            self.stay = (self.right_REF_X - _data.data) 
 
 
 
@@ -191,7 +191,7 @@ class LimoController:
         self.BASE_SPEED = _config.base_speed
         self.LATERAL_GAIN = float(_config.lateral_gain * 0.0015)
         self.REF_X = _config.reference_lane_x
-        self.right_REF_X = self.REF_X + 480
+        self.right_REF_X = self.REF_X + 240
         self.PEDE_STOP_WIDTH = _config.pedestrian_width_min
         return _config
 
