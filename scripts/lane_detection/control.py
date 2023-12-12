@@ -79,6 +79,7 @@ class LimoController:
         #rospy.Subscriber("/limo/yolo_object", ObjectArray, self.yolo_object_callback)
         rospy.Subscriber("/limo/lidar_warning", String, self.lidar_warning_callback)
         self.drive_pub = rospy.Publisher(rospy.get_param("~control_topic_name", "/cmd_vel"), Twist, queue_size=1)
+        self.angle_z = rospy.Publisher("/angle_z", Int32, queue_size=1)
         rospy.Timer(rospy.Duration(0.03), self.drive_callback)
 
     # return float
@@ -283,6 +284,8 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
+                    self.value = round(drive_data.angular.z)
+                    self.angle_z.publish(self.value)
                     
 
         except Exception as e:
