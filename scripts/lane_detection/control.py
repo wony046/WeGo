@@ -46,6 +46,8 @@ class LimoController:
         #self.yolo_object_last_time = rospy.Time.now().to_sec()
         #self.bbox_size = [0, 0]
         self.limo_mode = "ackermann"
+
+        self.dkdkdkdk = 0
         
         self.stay = 0
         self.rihgt_stay = 0
@@ -200,7 +202,7 @@ class LimoController:
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
         
-        self.dkdkdkdk
+        
 
         if (self.left == 0 and self.right == 0):
             self.true_distance_to_ref = self.distance_to_ref
