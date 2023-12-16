@@ -291,7 +291,7 @@ class LimoController:
                 if drive_data.linear.x == 0:
                     drive_data.angular.z = 0
                 else:
-                    if zzz == 1.4:
+                    if self.zzz == 1.4:
                         drive_data.angular.z = 1.4
                     else:
                         drive_data.angular.z = \
