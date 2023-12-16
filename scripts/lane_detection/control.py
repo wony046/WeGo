@@ -254,18 +254,19 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
-                        rospy.loginfo(self.marker_1)
-                        self.z = 0
-                        drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = self.z
-                        while(drive_data.angular.z <= 1.5):
-                            drive_data.angular.z += 0.05
-                            self.z = drive_data.angular.z
-                            if (self.left == 0):
-                                break
-                            else:
-                                drive_data.angular.z = self.z 
-                        self.marker_1 = 0
+                        if (self.right == 1):
+                        #rospy.loginfo(self.marker_1)
+                            self.z = 0
+                            drive_data.linear.x = self.BASE_SPEED
+                            drive_data.angular.z = self.z
+                            while(drive_data.angular.z <= 1.5):
+                                drive_data.angular.z += 0.05
+                                self.z = drive_data.angular.z
+                                if (self.right == 0):
+                                    break
+                                else:
+                                    drive_data.angular.z = self.z 
+                            self.marker_1 = 0
                         
                 elif (self.marker_2 == 1):
                     self.loop_time = rospy.get_time()
