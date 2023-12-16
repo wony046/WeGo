@@ -73,7 +73,7 @@ class LidarObjectDetector:
                 if not self.Warning_Status:
                     self.Warning_Status = True
                     self.Warning_first_time = rospy.Time.now()
-            self.warn_pub.publish("Warning")
+            self.warn_pub.publish("Warning222")
             rospy.logdebug("Object Detected!! Warning!!")
         elif cnt1 >= self.E_STOP_COUNT:
             if self.USE_LIFT:
