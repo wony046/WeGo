@@ -212,14 +212,14 @@ class LimoController:
         if (self.left == 0 and self.right == 1):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
-            self.dkdkdkdk = 1
+            
             
         if (self.left == 1 and self.right == 0):
-            if (self.dkdkdkdk == 1):
+            if self.e_stop == "ahhhhhhhh":
+                self.true_distance_to_ref = self.stay
+            else:
                 self.true_distance_to_ref = self.right_distance_to_ref
                 self.stay = self.right_distance_to_ref
-            else:
-                self.true_distance_to_ref = self.stay
 
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
