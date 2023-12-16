@@ -207,11 +207,13 @@ class LimoController:
         if (self.left == 0 and self.right == 0):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
+            rospy.logwarn("both")
             
 
         if (self.left == 0 and self.right == 1):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
+            rospy.logwarn("left")
             
             
         if (self.left == 1 and self.right == 0):
@@ -220,10 +222,12 @@ class LimoController:
             else:
                 self.true_distance_to_ref = self.right_distance_to_ref
                 self.stay = self.right_distance_to_ref
+            rospy.logwarn("right")
 
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
             self.dkdkdkdk = 0
+            rospy.logwarn("none")
         
 
         # print(current_time)
@@ -236,7 +240,7 @@ class LimoController:
             if self.e_stop == "Warning":
                 drive_data.linear.x = 0.0
                 drive_data.angular.z = 0.0
-                #rospy.logwarn("Obstacle Detected, Stop!")
+                c
             
             else:
                 if (self.marker_0 == 1):
