@@ -116,6 +116,8 @@ class LimoController:
             for marker in data.markers: 
             # data.markers 에 있는 마커 정보를 처리
                 # id가 0번일 경우
+                self.marker_distance = marker.pose.pose.position.x
+                rospy.loginfo(self.marker_distance)
                 if marker.id == 0:  # 정지 마커
                     if self.marker_00 == 0:
                         self.marker_0 = 1
@@ -124,7 +126,6 @@ class LimoController:
                 elif marker.id == 1: #오른쪽
                     if self.marker_11 == 0:
                         self.marker_1 = 1
-                        self.marker_distance = marker.pose.pose.position.x
                         self.marker_11 = 1
                 # id가 2번일 경우
                 elif marker.id == 2: #왼쪽
@@ -256,7 +257,7 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
-                    while (self.marker_distance >= 0.75):
+                    while (self.marker_distance >= 0.5):
                         drive_data.linear.x = self.BASE_SPEED
                         drive_data.angular.z = \
                     math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
@@ -303,7 +304,7 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
-                    rospy.loginfo(drive_data.angular.z)
+                    #rospy.loginfo(drive_data.angular.z)
 
 
         except Exception as e:
