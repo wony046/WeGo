@@ -162,7 +162,7 @@ class LimoController:
         '''
         if _data.data == -1:
             self.left = 1
-            rospy.logwarn("=============================")
+            #rospy.logwarn("=============================")
         else:
             self.distance_to_ref = self.REF_X - _data.data
             self.left = 0
@@ -174,7 +174,7 @@ class LimoController:
         '''
         if _data.data == 1:
             self.right = 1
-            rospy.logwarn("------------------------------")
+            #rospy.logwarn("------------------------------")
         else:
             self.right_distance_to_ref = self.right_REF_X - _data.data
             self.right = 0   
@@ -208,13 +208,13 @@ class LimoController:
         if (self.left == 0 and self.right == 0):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
-            rospy.logwarn("both")
+            #rospy.logwarn("both")
             
 
         if (self.left == 0 and self.right == 1):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
-            rospy.logwarn("left")
+            #rospy.logwarn("left")
             
             
         if (self.left == 1 and self.right == 0):
@@ -223,11 +223,11 @@ class LimoController:
             else:
                 self.true_distance_to_ref = self.right_distance_to_ref
                 self.stay = self.right_distance_to_ref
-            rospy.logwarn("right")
+            #rospy.logwarn("right")
 
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
-            rospy.logwarn("none")
+            #rospy.logwarn("none")
         
 
         # print(current_time)
@@ -290,7 +290,7 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
-                    rospy.loginfo("drive_data.angular.z" + drive_data.angular.z)
+                    rospy.loginfo("drive_data.angular.z", drive_data.angular.z)
 
 
         except Exception as e:
