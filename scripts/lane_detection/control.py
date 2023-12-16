@@ -290,12 +290,12 @@ class LimoController:
                 if drive_data.linear.x == 0:
                     drive_data.angular.z = 0
                 else:
-                    if z == 0:
+                    if zzz == 0:
                         drive_data.angular.z = \
                             math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                         # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                         self.drive_pub.publish(drive_data)
-                    elif z == 1.4:
+                    elif zzz == 1.4:
                         drive_data.angular.z = 1.4
 
         except Exception as e:
