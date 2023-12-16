@@ -68,7 +68,6 @@ class LimoController:
         self.marker_222 = 0
         self.marker_333 = 0
         self.markertime_count = 0
-        self.marker_distance = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -116,8 +115,6 @@ class LimoController:
             for marker in data.markers: 
             # data.markers 에 있는 마커 정보를 처리
                 # id가 0번일 경우
-                self.marker_distance = marker.pose.pose.position.x
-                rospy.loginfo(self.marker_distance)
                 if marker.id == 0:  # 정지 마커
                     if self.marker_00 == 0:
                         self.marker_0 = 1
@@ -165,7 +162,6 @@ class LimoController:
         '''
         if _data.data == -1:
             self.left = 1
-            #rospy.logwarn("=============================")
         else:
             self.distance_to_ref = self.REF_X - _data.data
             self.left = 0
@@ -175,9 +171,8 @@ class LimoController:
         '''
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
-        if _data.data == 1:
+        if _data.data == -1:
             self.right = 1
-            #rospy.logwarn("------------------------------")
         else:
             self.right_distance_to_ref = self.right_REF_X - _data.data
             self.right = 0   
@@ -211,13 +206,11 @@ class LimoController:
         if (self.left == 0 and self.right == 0):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
-            #rospy.logwarn("both")
             
 
         if (self.left == 0 and self.right == 1):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
-            #rospy.logwarn("left")
             
             
         if (self.left == 1 and self.right == 0):
@@ -226,11 +219,9 @@ class LimoController:
             else:
                 self.true_distance_to_ref = self.right_distance_to_ref
                 self.stay = self.right_distance_to_ref
-            #rospy.logwarn("right")
 
         if (self.left == 1 and self.right == 1):
             self.true_distance_to_ref = self.stay
-            #rospy.logwarn("none")
         
 
         # print(current_time)
@@ -257,24 +248,20 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
-                    while (self.marker_distance >= 0.5):
-                        drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = \
-                    math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                        if (self.right == 1):
-                            break
-                        #rospy.loginfo(self.marker_1)
-                    self.z = 0.0
-                    drive_data.linear.x = self.BASE_SPEED
-                    drive_data.angular.z = self.z
-                    while(drive_data.angular.z <= 1.5):
-                        drive_data.angular.z += 0.05
-                        self.z = drive_data.angular.z
-                        if (self.right == 0):
-                            break
-                        else:
-                            drive_data.angular.z = self.z 
-                    self.marker_1 = 0
+                    
+                    if self.right == 1:
+                        self.wait_time = rospy.get_time()
+                        if self.wait_time - self.loop_time >= 0.3:
+                            drive_data.linear.x = self.BASE_SPEE
+                            drive_data.angular.z = 1.3
+                            if self.left == 1:
+                                if self.wait_time - self.loop_time >= 0.3:
+                                    self.marker_1 = 0
+                            else:
+                                self.loop_time = rospy.get_time()
+                    else:
+                        self.loop_time = rospy.get_time()
+                        self.wait_time = rospy.get_time()
                         
                 elif (self.marker_2 == 1):
                     self.loop_time = rospy.get_time()
@@ -304,8 +291,6 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
-                    #rospy.loginfo(drive_data.angular.z)
-
 
         except Exception as e:
             rospy.logwarn(e)
