@@ -68,6 +68,8 @@ class LimoController:
         self.marker_222 = 0
         self.marker_333 = 0
         self.markertime_count = 0
+
+        self.zzz = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -252,7 +254,7 @@ class LimoController:
                         self.wait_time = rospy.get_time()
                         if self.wait_time - self.loop_time >= 0.3:
                             drive_data.linear.x = self.BASE_SPEED
-                            drive_data.angular.z = 1.3
+                            self.zzz = 1.4
                             if self.left == 0:
                                 if self.wait_time - self.loop_time >= 0.3:
                                     self.marker_1 = 0
@@ -262,8 +264,7 @@ class LimoController:
                         self.loop_time = rospy.get_time()
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = \
-                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                        self.zzz = 0
                         
                 elif (self.marker_2 == 1):
                     self.loop_time = rospy.get_time()
@@ -289,10 +290,13 @@ class LimoController:
                 if drive_data.linear.x == 0:
                     drive_data.angular.z = 0
                 else:
-                    drive_data.angular.z = \
-                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                    # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
-                    self.drive_pub.publish(drive_data)
+                    if z == 0:
+                        drive_data.angular.z = \
+                            math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                        # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
+                        self.drive_pub.publish(drive_data)
+                    elif z == 1.4:
+                        drive_data.angular.z = 1.4
 
         except Exception as e:
             rospy.logwarn(e)
