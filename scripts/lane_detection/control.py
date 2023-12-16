@@ -172,7 +172,7 @@ class LimoController:
         '''
             실제 기준 좌표와 검출된 차선과의 거리 저장
         '''
-        if _data.data == -1:
+        if _data.data == 1:
             self.right = 1
             rospy.logwarn("------------------------------")
         else:
