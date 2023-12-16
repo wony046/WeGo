@@ -254,6 +254,7 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
+                        rospy.loginfo(self.marker_1)
                         self.z = 0
                         drive_data.linear.x = self.BASE_SPEED
                         drive_data.angular.z = self.z
@@ -294,7 +295,7 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
-                    rospy.loginfo(drive_data.angular.z)
+                    #rospy.loginfo(drive_data.angular.z)
 
 
         except Exception as e:
