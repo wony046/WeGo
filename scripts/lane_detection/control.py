@@ -250,6 +250,8 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
+                    rospy.logwarn("marker 1 is there , Left!")
+                    
                     if self.right == 1:
                         self.wait_time = rospy.get_time()
                         if self.wait_time - self.loop_time >= 0.3:
