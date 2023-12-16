@@ -68,6 +68,7 @@ class LimoController:
         self.marker_222 = 0
         self.marker_333 = 0
         self.markertime_count = 0
+        self.marker_distance = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -123,6 +124,7 @@ class LimoController:
                 elif marker.id == 1: #오른쪽
                     if self.marker_11 == 0:
                         self.marker_1 = 1
+                        self.marker_distance = marker.pose.pose.position.x
                         self.marker_11 = 1
                 # id가 2번일 경우
                 elif marker.id == 2: #왼쪽
@@ -254,19 +256,24 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
+                    while (self.marker_distance >= 0.75):
+                        drive_data.linear.x = self.BASE_SPEED
+                        drive_data.angular.z = \
+                    math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                         if (self.right == 1):
+                            break
                         #rospy.loginfo(self.marker_1)
-                            self.z = 0
-                            drive_data.linear.x = self.BASE_SPEED
-                            drive_data.angular.z = self.z
-                            while(drive_data.angular.z <= 1.5):
-                                drive_data.angular.z += 0.05
-                                self.z = drive_data.angular.z
-                                if (self.right == 0):
-                                    break
-                                else:
-                                    drive_data.angular.z = self.z 
-                            self.marker_1 = 0
+                    self.z = 0.0
+                    drive_data.linear.x = self.BASE_SPEED
+                    drive_data.angular.z = self.z
+                    while(drive_data.angular.z <= 1.5):
+                        drive_data.angular.z += 0.05
+                        self.z = drive_data.angular.z
+                        if (self.right == 0):
+                            break
+                        else:
+                            drive_data.angular.z = self.z 
+                    self.marker_1 = 0
                         
                 elif (self.marker_2 == 1):
                     self.loop_time = rospy.get_time()
