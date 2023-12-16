@@ -64,7 +64,7 @@ class LidarObjectDetector:
             if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < self.E_STOP_DISTANCE_METER:
                 #cnt += 1
 		cnt = cnt + 1
-        if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.5):
+            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.5):
                 #cnt += 1
 		cnt1 = cnt1 + 1
         
@@ -76,10 +76,6 @@ class LidarObjectDetector:
             self.warn_pub.publish("Warning")
             rospy.logdebug("Object Detected!! Warning!!")
         elif cnt1 >= self.E_STOP_COUNT:
-            if self.USE_LIFT:
-                if not self.Warning_Status:
-                    self.Warning_Status = True
-                    self.Warning_first_time = rospy.Time.now()
             self.warn_pub.publish("ahhhhhhhh")
             rospy.logdebug("ahhhhhhhh")
         else:
