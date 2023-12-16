@@ -57,12 +57,17 @@ class LidarObjectDetector:
             카운팅된 점의 수가 기준 이상이면, 위험 메시지 전달
         '''
         cnt = 0
+        cnt1 = 0
         angle_rad = [_data.angle_min + i * _data.angle_increment for i, _ in enumerate(_data.ranges)]
         angle_deg = [180 / math.pi * angle for angle in angle_rad]
         for i, angle in enumerate(angle_deg):
             if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < self.E_STOP_DISTANCE_METER:
                 #cnt += 1
 		cnt = cnt + 1
+        if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and self.E_STOP_DISTANCE_METER < _data.ranges[i] < self.E_STOP_DISTANCE_METER:
+                #cnt += 1
+		cnt1 = cnt1 + 1
+        
         if cnt >= self.E_STOP_COUNT:
             if self.USE_LIFT:
                 if not self.Warning_Status:
@@ -70,6 +75,13 @@ class LidarObjectDetector:
                     self.Warning_first_time = rospy.Time.now()
             self.warn_pub.publish("Warning")
             rospy.logdebug("Object Detected!! Warning!!")
+        elif cnt1 >= self.E_STOP_COUNT:
+            if self.USE_LIFT:
+                if not self.Warning_Status:
+                    self.Warning_Status = True
+                    self.Warning_first_time = rospy.Time.now()
+            self.warn_pub.publish("ahhhhhhhh")
+            rospy.logdebug("ahhhhhhhh")
         else:
             if self.USE_LIFT:
                 if self.Warning_Status:
