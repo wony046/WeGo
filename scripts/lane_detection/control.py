@@ -253,7 +253,7 @@ class LimoController:
                         if self.wait_time - self.loop_time >= 0.3:
                             drive_data.linear.x = self.BASE_SPEED
                             drive_data.angular.z = 1.3
-                            if self.left == 1:
+                            if self.left == 0:
                                 if self.wait_time - self.loop_time >= 0.3:
                                     self.marker_1 = 0
                             else:
