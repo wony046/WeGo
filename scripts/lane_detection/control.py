@@ -35,7 +35,7 @@ class LimoController:
         rospy.init_node('limo_control', anonymous=True)
         self.LIMO_WHEELBASE = 0.2
         self.distance_to_ref = 0
-        self.rihgt_distance_to_ref = 0
+        self.right_distance_to_ref = 0
         self.true_distance_to_ref = 0
         #self.crosswalk_detected = False
         #self.yolo_object = "green"
