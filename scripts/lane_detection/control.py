@@ -162,6 +162,7 @@ class LimoController:
         '''
         if _data.data == -1:
             self.left = 1
+            rospy.logwarn("=============================")
         else:
             self.distance_to_ref = self.REF_X - _data.data
             self.left = 0
