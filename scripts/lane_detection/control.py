@@ -251,7 +251,7 @@ class LimoController:
                     if self.right == 1:
                         self.wait_time = rospy.get_time()
                         if self.wait_time - self.loop_time >= 0.3:
-                            drive_data.linear.x = self.BASE_SPEE
+                            drive_data.linear.x = self.BASE_SPEED
                             drive_data.angular.z = 1.3
                             if self.left == 1:
                                 if self.wait_time - self.loop_time >= 0.3:
@@ -261,7 +261,7 @@ class LimoController:
                     else:
                         self.loop_time = rospy.get_time()
                         self.wait_time = rospy.get_time()
-                        drive_data.linear.x = self.BASE_SPEE
+                        drive_data.linear.x = self.BASE_SPEED
                         drive_data.angular.z = \
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                         
