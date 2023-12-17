@@ -72,6 +72,7 @@ class LimoController:
 
         self.rrr = 0
         self.lll = 0
+        self.lll2 = 0
 
         self.bump = "not_bump"
         #self.bool = False
