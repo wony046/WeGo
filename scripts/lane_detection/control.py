@@ -272,10 +272,9 @@ class LimoController:
                         rospy.logwarn("222222222222222222")
                     if self.rrr == 1:
                         if (self.right == 0):
-                            rospy.logwarn("------------------------")
-                            if self.wait_time - self.lloop_time >= 0.5:
-                                self.marker_1 = 0
-                                rospy.logwarn("+++++++++++++++++++++++++")
+                            
+                            self.marker_1 = 0
+                            rospy.logwarn("+++++++++++++++++++++++++")
                         else:
                             self.lloop_time = rospy.get_time()
                             drive_data.angular.z = -1.4
