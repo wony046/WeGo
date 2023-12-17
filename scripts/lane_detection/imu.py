@@ -22,7 +22,7 @@ class limo_imu:
         #self.wait_time = rospy.get_time()
         self.linear_acceleration_x = data.linear_acceleration.x
         self.linear_acceleration_z = data.linear_acceleration.z
-        if ((self.linear_acceleration_x >= 1.7 or self.linear_acceleration_x <= -1.7) and self.linear_acceleration_z != 0):
+        if ((self.linear_acceleration_x >= 2.2 or self.linear_acceleration_x <= -2.2) and self.linear_acceleration_z != 0):
             self.pitch = math.atan(self.linear_acceleration_x / self.linear_acceleration_z)
             if (self.pitch >= self.start_bump or self.pitch <= self.last_bump):
                 #if self.wait_time - self.loop_time >= 0.5:
