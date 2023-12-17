@@ -286,11 +286,10 @@ class LimoController:
         #rospy.loginfo("Bbox Size = {}, Bbox_width_min = {}".format(self.bbox_size, self.PEDE_STOP_WIDTH))
 
         try:
-            if self.e_stop == "Warning":
+            if (self.e_stop == "Warning" and self.marker_3 == 0):
                 rospy.loginfo("E-STOP!!!!")
-                if self.marker_3 != 1:   
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
+                drive_data.linear.x = 0.0
+                drive_data.angular.z = 0.0
             
             elif (self.bump == "bump"):
                 drive_data.linear.x = self.BASE_SPEED / 2
@@ -372,46 +371,55 @@ class LimoController:
                 elif (self.marker_3 == 1):
                     if (self.parking == "back"):
                         self.parking_start_time = rospy.get_time()
-                        while(rospy.get_time() - self.parking_start_time >= 2):
+                        while(self.parking_loop_time - self.parking_start_time >= 2):
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = -1.5
                             drive_data.angular.z = \
                             math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                             self.drive_pub.publish(drive_data)
+                            self.parking_loop_time = rospy.get_time()
 
                         self.parking_start_time = rospy.get_time()
-                        while(rospy.get_time() - self.parking_start_time >= 1):
+                        while(self.parking_loop_time - self.parking_start_time >= 1):
                             rospy.loginfo("parking......")
+                            self.parking_loop_time = rospy.get_time()
                     
                         if (self.marker_1 == 1):
                             rospy.logwarn("righting......")
                             self.parking_start_time = rospy.get_time()
-                            while(rospy.get_time() - self.parking_start_time >= 0.65):
+                            while(self.parking_loop_time - self.parking_start_time >= 0.65):
                                 drive_data.linear.x = self.BASE_SPEED
                                 drive_data.angular.z = 0.0
                                 self.drive_pub.publish(drive_data)
+                                self.parking_loop_time = rospy.get_time()
+
                             self.parking_start_time = rospy.get_time()
-                            while(rospy.get_time() - self.parking_start_time >= 1.5):
+                            while(self.parking_loop_time - self.parking_start_time >= 1.5):
                                 drive_data.linear.x = self.BASE_SPEED
                                 drive_data.angular.z = -1.5
                                 drive_data.angular.z = \
                                 math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                                 self.drive_pub.publish(drive_data)
+                                self.parking_loop_time = rospy.get_time()
                         
-                        else:
+                        elif (self.marker_2 == 1):
                             rospy.logwarn("lefting......")
                             self.parking_start_time = rospy.get_time()
-                            while(rospy.get_time() - self.parking_start_time >= 0.65):
+                            while(self.parking_loop_time - self.parking_start_time >= 0.65):
                                 drive_data.linear.x = self.BASE_SPEED
                                 drive_data.angular.z = 0.0
                                 self.drive_pub.publish(drive_data)
+                                self.parking_loop_time = rospy.get_time()
+
                             self.parking_start_time = rospy.get_time()
-                            while(rospy.get_time() - self.parking_start_time >= 1.5):
+                            while(self.parking_loop_time - self.parking_start_time >= 1.5):
                                 drive_data.linear.x = self.BASE_SPEED
                                 drive_data.angular.z = 1.5
                                 drive_data.angular.z = \
                                 math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                                 self.drive_pub.publish(drive_data)
+                                self.parking_loop_time = rospy.get_time()
+                                
                         self.marker_3 = 0
 
                     else:
