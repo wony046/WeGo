@@ -373,7 +373,7 @@ class LimoController:
                         self.parking_start_time = rospy.get_time() #지역변수
                         self.parking_loop_time = rospy.get_time() #지역변수
                         while(self.parking_loop_time - self.parking_start_time <= 4):
-                            drive_data.linear.x = -(self.BASE_SPEED / 2)
+                            drive_data.linear.x = -(self.BASE_SPEED / 1.4)
                             drive_data.angular.z = -1.5
                             drive_data.angular.z = \
                             math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
@@ -381,55 +381,50 @@ class LimoController:
                             self.parking_loop_time = rospy.get_time()
 
                         self.parking_start_time = rospy.get_time()
-                        while(self.parking_loop_time - self.parking_start_time <= 1):
+                        while(self.parking_loop_time - self.parking_start_time <= 1.5):
                             rospy.loginfo("parking......")
                             self.parking_loop_time = rospy.get_time()
-                    
-                        if (self.marker_1 == 1):
-                            rospy.logwarn("righting......")
-                            self.parking_start_time = rospy.get_time()
-                            while(self.parking_loop_time - self.parking_start_time <= 0.65):
-                                drive_data.linear.x = self.BASE_SPEED
-                                drive_data.angular.z = 0.0
-                                self.drive_pub.publish(drive_data)
-                                self.parking_loop_time = rospy.get_time()
 
-                            self.parking_start_time = rospy.get_time()
-                            while(self.parking_loop_time - self.parking_start_time <= 1.5):
-                                drive_data.linear.x = self.BASE_SPEED
-                                drive_data.angular.z = -1.5
-                                drive_data.angular.z = \
-                                math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                                self.drive_pub.publish(drive_data)
-                                self.parking_loop_time = rospy.get_time()
-                        
-                        elif (self.marker_2 == 1):
-                            rospy.logwarn("lefting......")
-                            self.parking_start_time = rospy.get_time()
-                            while(self.parking_loop_time - self.parking_start_time <= 0.65):
-                                drive_data.linear.x = self.BASE_SPEED
-                                drive_data.angular.z = 0.0
-                                self.drive_pub.publish(drive_data)
-                                self.parking_loop_time = rospy.get_time()
-
-                            self.parking_start_time = rospy.get_time()
-                            while(self.parking_loop_time - self.parking_start_time <= 1.5):
-                                drive_data.linear.x = self.BASE_SPEED
-                                drive_data.angular.z = 1.5
-                                drive_data.angular.z = \
-                                math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                                self.drive_pub.publish(drive_data)
-                                self.parking_loop_time = rospy.get_time()
-                        
                         self.marker_3 = 0
-
+                        
                     else:
                         drive_data.linear.x = self.BASE_SPEED
-                        if (self.marker_distance < 0.5 and drive_data.linear.x >= 1.3):
-                            rospy.loginfo(self.marker_distance)
-                            drive_data.linear.x = self.BASE_SPEED - 0.001
-                        else:
-                            drive_data.linear.x = (self.BASE_SPEED / 2)
+                    
+                elif (self.marker_1 == 1):
+                    rospy.logwarn("righting......")
+                    self.parking_start_time = rospy.get_time()
+                    while(self.parking_loop_time - self.parking_start_time <= 0.65):
+                        drive_data.linear.x = self.BASE_SPEED
+                        drive_data.angular.z = 0.0
+                        self.drive_pub.publish(drive_data)
+                        self.parking_loop_time = rospy.get_time()
+
+                    self.parking_start_time = rospy.get_time()
+                    while(self.parking_loop_time - self.parking_start_time <= 1.5):
+                        drive_data.linear.x = self.BASE_SPEED
+                        drive_data.angular.z = -1.5
+                        drive_data.angular.z = \
+                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                        self.drive_pub.publish(drive_data)
+                        self.parking_loop_time = rospy.get_time()
+                
+                elif (self.marker_2 == 1):
+                    rospy.logwarn("lefting......")
+                    self.parking_start_time = rospy.get_time()
+                    while(self.parking_loop_time - self.parking_start_time <= 0.65):
+                        drive_data.linear.x = self.BASE_SPEED
+                        drive_data.angular.z = 0.0
+                        self.drive_pub.publish(drive_data)
+                        self.parking_loop_time = rospy.get_time()
+
+                    self.parking_start_time = rospy.get_time()
+                    while(self.parking_loop_time - self.parking_start_time <= 1.5):
+                        drive_data.linear.x = self.BASE_SPEED
+                        drive_data.angular.z = 1.5
+                        drive_data.angular.z = \
+                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                        self.drive_pub.publish(drive_data)
+                        self.parking_loop_time = rospy.get_time()
 
                 else:
                     drive_data.linear.x = self.BASE_SPEED
