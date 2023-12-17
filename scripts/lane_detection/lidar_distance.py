@@ -23,13 +23,11 @@ class LidarObjectDetector:
         rospy.init_node('lidar_e_stop', anonymous=False)
         srv = Server(lidar_e_stopConfig, self.reconfigure_callback)
         self.sub_ls = rospy.Subscriber(rospy.get_param("lidar_topic_name", "/scan"), LaserScan, self.lidar_callback)
-        self.warn_pub = rospy.Publisher("/limo/lidar_warning", String, queue_size=2)
+        self.warn_pub = rospy.Publisher("/limo/parking", String, queue_size=2)
         self.USE_LIFT = True # LIFT 사용 여부 결정 (사용하면 True)
-        if self.USE_LIFT:
-            self.lifter_ctrl_pub = rospy.Publisher("/chatter_updown", UInt8, queue_size=3)
-            self.Warning_Status = False
-            self.Warning_first_time = rospy.Time.from_sec(0.0)
-            self.Safe_first_time = rospy.Time.now()
+        self.left = 0
+        self.right = 0
+        
 
     # ==============================================
     #               Callback Functions
@@ -48,7 +46,7 @@ class LidarObjectDetector:
         self.E_STOP_DISTANCE_METER = _config.e_stop_distance_meter
         self.E_STOP_COUNT = _config.e_stop_count
         return _config
-
+    
     def lidar_callback(self, _data):
         '''
             실제 라이다 데이터를 받아서 동작하는 부분
@@ -57,43 +55,17 @@ class LidarObjectDetector:
             카운팅된 점의 수가 기준 이상이면, 위험 메시지 전달
         '''
         cnt = 0
-        cnt1 = 0
         angle_rad = [_data.angle_min + i * _data.angle_increment for i, _ in enumerate(_data.ranges)]
         angle_deg = [180 / math.pi * angle for angle in angle_rad]
         for i, angle in enumerate(angle_deg):
-            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < self.E_STOP_DISTANCE_METER:
+            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.2):
                 #cnt += 1
 		    cnt = cnt + 1
-            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.5):
-                #cnt += 1
-		    cnt1 = cnt1 + 1
         
         if cnt >= self.E_STOP_COUNT:
-            if self.USE_LIFT:
-                if not self.Warning_Status:
-                    self.Warning_Status = True
-                    self.Warning_first_time = rospy.Time.now()
-            self.warn_pub.publish("Warning")
-            rospy.logdebug("Object Detected!! Warning!!")
-        elif cnt1 >= self.E_STOP_COUNT:
-            self.warn_pub.publish("ahhhhhhhh")
-            rospy.logdebug("ahhhhhhhh")
+            self.warn_pub.publish("back")
         else:
-            if self.USE_LIFT:
-                if self.Warning_Status:
-                    self.Warning_Status = False
-                    self.Safe_first_time = rospy.Time.now()
-                self.Warning_first_time = rospy.Time.now()
             self.warn_pub.publish("Safe")
-            rospy.logdebug("Safe!!")
-        if self.USE_LIFT:
-            self.ctrl_lift()
-        
-    def ctrl_lift(self):
-        if rospy.Time.now().to_sec() - self.Warning_first_time.to_sec() > 5.0: # 5초 이상 정지하면 차단기 열기
-            self.lifter_ctrl_pub.publish(1)
-        elif 5.0 < rospy.Time.now().to_sec() - self.Safe_first_time.to_sec() < 6.0: # 5초 이상, 6초 이하 주행 중이면 차단기 닫기
-            self.lifter_ctrl_pub.publish(2)
 
 def run():
     new_class = LidarObjectDetector()
