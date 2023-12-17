@@ -291,6 +291,7 @@ class LimoController:
 
         try:
             if self.e_stop == "Warning":
+                rospy.loginfo("2121")
                 if self.marker_3 != 1:   
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
