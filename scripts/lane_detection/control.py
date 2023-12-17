@@ -355,7 +355,7 @@ class LimoController:
             elif self.limo_mode == "ackermann":
                 if drive_data.linear.x == 0:
                     drive_data.angular.z = 0
-                    rospy.loginfo("-/-/--/-//-/-/-/-/-/-/---/--/-/-/-/-/-/-/-/")
+                    #rospy.loginfo("-/-/--/-//-/-/-/-/-/-/---/--/-/-/-/-/-/-/-/")
                 else:
                     drive_data.angular.z = \
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
