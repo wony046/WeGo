@@ -235,7 +235,7 @@ class LimoController:
         
 
         if (self.left == 0 and self.right == 0):
-            self.true_distance_to_ref = self.distance_to_ref
+            self.true_distance_to_ref = self.right_distance_to_ref
             self.stay = self.distance_to_ref
             #rospy.logwarn("both")
             
@@ -287,7 +287,7 @@ class LimoController:
                     self.wait_time = rospy.get_time()
                     drive_data.linear.x = self.BASE_SPEED
                     if (self.right == 1):
-                        if self.wait_time - self.loop_time >= 0.65:
+                        if self.wait_time - self.loop_time >= 0.7:
                             self.wait_time = rospy.get_time()
                             self.rrr = 1
                     else:
