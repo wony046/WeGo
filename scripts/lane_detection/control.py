@@ -264,7 +264,7 @@ class LimoController:
                     drive_data.linear.x = self.BASE_SPEED
                     if (self.right == 1):
                         rospy.logwarn("1111111111111111111111")
-                        if self.wait_time - self.loop_time >= 0.5:
+                        if self.wait_time - self.loop_time >= 0.8:
                             self.wait_time = rospy.get_time()
                             self.rrr = 1
                     else:
