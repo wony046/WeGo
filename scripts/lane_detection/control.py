@@ -378,6 +378,7 @@ class LimoController:
                                     drive_data.linear.x = -(self.BASE_SPEED / 2)
                                     drive_data.angular.z = 0.0
                                     self.wait_time = rospy.get_time()
+                                    self.drive_pub.publish(drive_data)
                                 self.marker_3 = 0
                                 self.ppp = 0
 
