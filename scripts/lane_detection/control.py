@@ -2,8 +2,7 @@
 # -*- coding:utf-8 -*-
 # limo_application/scripts/lane_detection/control.py
 # WeGo LIMO Pro를 이용한 주행 코드
-# mk2-1..
-#2222222222
+# mk2-1
 
 import rospy
 import os
@@ -398,8 +397,11 @@ class LimoController:
                                     drive_data.angular.z = 0.0
                                     self.wait_time = rospy.get_time()
                                     self.drive_pub.publish(drive_data)
+                                    rospy.logwarn("+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+//+")
                                 self.marker_3 = 0
                                 self.ppp = 0
+                                self.back = 0
+                                self.back1 = 0
 
                         else:
                             rospy.logwarn("lllllllllllllllllllllllllll")
@@ -413,7 +415,9 @@ class LimoController:
                     else:
                         rospy.logwarn("0000000000000000000000000000")
                         drive_data.linear.x = self.BASE_SPEED / 1.2
-                        if(self.marker_distance <= 0.55):
+                        if(self.true_distance_to_ref * self.LATERAL_GAIN == 0):
+                            self.back1 = 1
+                        if self.back1 == 1:
                             drive_data.angular.z = 0.0
                             rospy.logwarn("*****************")
 
