@@ -266,14 +266,13 @@ class LimoController:
                         if (self.right == 1):
                             break
                         #rospy.loginfo(self.marker_1)
-                    rospy.logwarn("Marker 1 dedect!")
+                    #rospy.logwarn("Marker 1 dedect!")
                     self.z = 0.0
                     drive_data.linear.x = self.BASE_SPEED
-                    drive_data.angular.z = drive_data.angular.z = \
-                    math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                     self.z = drive_data.angular.z
                     while(drive_data.angular.z <= 10):
-                        drive_data.angular.z += 1
+                        rospy.logwarn("Marker 1 dedect!")
+                        drive_data.angular.z = drive_data.angular.z + 1.0
                         self.z = drive_data.angular.z
                         self.drive_pub.publish(drive_data)
                         if (self.right == 0):
