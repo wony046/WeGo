@@ -260,16 +260,21 @@ class LimoController:
                     #rospy.logwarn("Marker 1 dedect!")
                     self.wait_time = rospy.get_time()
                     if (self.right == 1):
+                        rospy.logwarn("1111111111111111111111")
                         if self.wait_time - self.loop_time >= 0.5:
                             self.wait_time = rospy.get_time()
                             drive_data.angular.z = 1.4
                             if (self.right == 0):
+                                rospy.logwarn("------------------------")
                                 if self.wait_time - self.lloop_time >= 0.5:
                                     self.marker_1 = 0
+                                    rospy.logwarn("+++++++++++++++++++++++++")
                             else:
                                 self.lloop_time = rospy.get_time()
+                                rospy.logwarn("=====================")
                     else:
                         self.loop_time = rospy.get_time()
+                        rospy.logwarn("222222222222222222")
 
                 elif (self.marker_2 == 1):
                     self.loop_time = rospy.get_time()
