@@ -278,13 +278,13 @@ class LimoController:
             if self.e_stop == "Warning":
                 drive_data.linear.x = 0.0
                 drive_data.angular.z = 0.0
+            
+            elif (self.bump == "bump"):
+                drive_data.linear.x = self.BASE_SPEED / 2
+                drive_data.angular.z = 0.0
                 
             else:
-                if (self.bump == "bump"):
-                    drive_data.linear.x = 0.0
-                    drive_data.angular.z = 0.0
-
-                elif (self.marker_0 == 1):
+                if (self.marker_0 == 1):
                     self.loop_time = rospy.get_time()
                     self.wait_time = rospy.get_time()
                     while (self.wait_time - self.loop_time <= 3):
@@ -343,10 +343,7 @@ class LimoController:
                     self.marker_3 = 0
                     #rospy.logwarn("marker 2 is there , Left!")
                     
-                        
-                
-                          
-                
+                    
                 else:
                     drive_data.linear.x = self.BASE_SPEED
                     #rospy.loginfo("All Clear, Just Drive!")
