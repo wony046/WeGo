@@ -155,8 +155,6 @@ class LimoController:
                         self.marker_3 = 1
                         self.marker_33 = 1
                     else:
-                        if (self.marker_0 == 0):
-                            self.marker_00 = 0
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
                         if (self.marker_2 == 0):
@@ -169,10 +167,6 @@ class LimoController:
             if (self.markertime - self.markertime_count >= 1):
                 if (self.marker_0 == 0):
                     self.marker_00 = 0
-                if (self.marker_1 == 0):
-                    self.marker_11 = 0
-                if (self.marker_2 == 0):
-                    self.marker_22 = 0
                     
 
             
