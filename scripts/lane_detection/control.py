@@ -123,19 +123,19 @@ class LimoController:
                 if marker.id == 0:  # 정지 마커
                     if self.marker_00 == 0:
                         self.marker_0 = 1
-                        self.marker_00 = 1
+                        self.marker_00 = 1              
                 # id가 1번일 경우
-                elif marker.id == 1: #오른쪽
+                if marker.id == 1: #오른쪽
                     if self.marker_11 == 0:
                         self.marker_1 = 1
                         self.marker_11 = 1
                 # id가 2번일 경우
-                elif marker.id == 2: #왼쪽
+                if marker.id == 2: #왼쪽
                     if self.marker_22 == 0:
                         self.marker_2 = 1
                         self.marker_22 = 1
                 # id가 3일 경우 
-                elif marker.id == 3: #주차
+                if marker.id == 3: #주차
                    if self.marker_33 == 0:
                         self.marker_3 = 1
                         self.marker_33 = 1
@@ -263,22 +263,19 @@ class LimoController:
                     self.wait_time = rospy.get_time()
                     drive_data.linear.x = self.BASE_SPEED
                     if (self.right == 1):
-                        rospy.logwarn("1111111111111111111111")
                         if self.wait_time - self.loop_time >= 0.65:
                             self.wait_time = rospy.get_time()
                             self.rrr = 1
                     else:
                         self.loop_time = rospy.get_time()
-                        rospy.logwarn("222222222222222222")
+
                     if self.rrr == 1:
                         if (self.right == 0 and self.left == 0):
-                        
                             self.marker_1 = 0
-                            rospy.logwarn("+++++++++++++++++++++++++")
                         else:
                             self.lloop_time = rospy.get_time()
                             drive_data.angular.z = -1.4
-                            rospy.logwarn("=====================")
+
 
                 elif (self.marker_2 == 1):
                     self.loop_time = rospy.get_time()
