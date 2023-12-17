@@ -125,8 +125,6 @@ class LimoController:
                         self.marker_0 = 1
                         self.marker_00 = 1    
                     else:
-                        if (self.marker_0 == 0):
-                            self.marker_00 = 0
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
                         if (self.marker_2 == 0):
@@ -137,8 +135,6 @@ class LimoController:
                         self.marker_1 = 1
                         self.marker_11 = 1
                     else:
-                        if (self.marker_0 == 0):
-                            self.marker_00 = 0
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
                         if (self.marker_2 == 0):
@@ -149,8 +145,6 @@ class LimoController:
                         self.marker_2 = 1
                         self.marker_22 = 1
                     else:
-                        if (self.marker_0 == 0):
-                            self.marker_00 = 0
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
                         if (self.marker_2 == 0):
@@ -170,7 +164,7 @@ class LimoController:
                 
                 self.markertime_count = rospy.get_time()
 
-        '''       
+              
         else:
             if (self.markertime - self.markertime_count >= 1):
                 if (self.marker_0 == 0):
@@ -179,7 +173,7 @@ class LimoController:
                     self.marker_11 = 0
                 if (self.marker_2 == 0):
                     self.marker_22 = 0
-                    '''
+                    
 
             
             
