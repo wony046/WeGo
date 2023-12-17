@@ -188,6 +188,8 @@ class LimoController:
                     self.marker_11 = 0
                 if (self.marker_2 == 0):
                     self.marker_22 = 0
+                if (self.marker_3 == 0):
+                    self.marker_33 = 0 
                
                     
 
