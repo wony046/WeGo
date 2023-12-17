@@ -372,7 +372,15 @@ class LimoController:
                             if self.ppp == 0:
                                 self.ppp = 1
                                 rospy.logwarn("===================")
+                            if self.ppp == 1:
+                                drive_data.linear.x = -(self.BASE_SPEED / 2)
+                                drive_data.angular.z = -1.4
                             if self.ppp == 2:
+                                self.ppp = 3
+                            if self.ppp == 3:
+                                drive_data.linear.x = -(self.BASE_SPEED / 2)
+                                drive_data.angular.z = -1.4
+                            if self.ppp == 4:
                                 rospy.logwarn("++++++++++++++++++++")
                                 self.loop_time = rospy.get_time()
                                 self.wait_time = rospy.get_time()
@@ -390,13 +398,14 @@ class LimoController:
                             if self.ppp == 1:
                                 rospy.logwarn("////////////////////////")
                                 self.ppp =2
+                            if self.ppp == 3:
+                                self.ppp = 4
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = -1.4
                     else:
                         rospy.logwarn("0000000000000000000000000000")
-                        drive_data.linear.x = self.BASE_SPEED / 2
-                        drive_data.angular.z = 0
-
+                        drive_data.linear.x = self.BASE_SPEED / 1.2
+                        
                     #rospy.logwarn("marker 2 is there , Left!")
                     
                     
