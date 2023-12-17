@@ -58,7 +58,7 @@ class LidarObjectDetector:
         angle_rad = [_data.angle_min + i * _data.angle_increment for i, _ in enumerate(_data.ranges)]
         angle_deg = [180 / math.pi * angle for angle in angle_rad]
         for i, angle in enumerate(angle_deg):
-            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.3):
+            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.6):
                 #cnt += 1
 		    cnt = cnt + 1
         
