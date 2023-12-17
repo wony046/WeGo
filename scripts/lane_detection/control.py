@@ -257,7 +257,8 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
-                    while (self.marker_distance >= 0.4):
+                    rospy.logwarn("Marker 1 dedect!")
+                    while (self.marker_distance >= 0.7):
                         drive_data.linear.x = self.BASE_SPEED
                         drive_data.angular.z = \
                     math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
