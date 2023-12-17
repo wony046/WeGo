@@ -53,4 +53,9 @@
       
    </node>
 
+   <node name="parking" pkg="limo_application" type="lidar_distance.py" output="log">
+      <rosparam file="$(find limo_application)/params/lane_detection/e_stop.yaml" command="load" />
+      <param name="lidar_topic_name" value="/scan"/>
+   </node>
+
 </launch> 
