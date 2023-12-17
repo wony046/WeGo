@@ -291,8 +291,7 @@ class LimoController:
 
         try:
             if self.e_stop == "Warning":
-                rospy.loginfo("2121")
-                if self.marker_3 != 1:   
+                if self.marker_3 == 0:   
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
             
@@ -335,7 +334,7 @@ class LimoController:
 
 
                 elif (self.marker_2 == 1):
-                    if self.marker_3 != 1:
+                    if self.marker_3 == 0:
                         #rospy.logwarn("Marker 1 dedect!")
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
@@ -425,7 +424,7 @@ class LimoController:
                         if(self.true_distance_to_ref * self.LATERAL_GAIN == 0):
                             self.back1 = 1
                         if self.back1 == 1:
-                            drive_data.angular.z = 0.3
+                            drive_data.angular.z = -0.2
                             rospy.logwarn("*****************")
 
                         
