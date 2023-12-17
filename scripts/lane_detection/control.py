@@ -72,6 +72,8 @@ class LimoController:
 
         self.rrr = 0
         self.lll = 0
+
+        self.bump = "not_bump"
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -84,6 +86,7 @@ class LimoController:
         #rospy.Subscriber("/limo/crosswalk_y", Int32, self.crosswalk_y_callback)
         #rospy.Subscriber("/limo/yolo_object", ObjectArray, self.yolo_object_callback)
         rospy.Subscriber("/limo/lidar_warning", String, self.lidar_warning_callback)
+        rospy.Subscriber("/limo/imu_pitch", String, self.bump_detect_callback)
         self.drive_pub = rospy.Publisher(rospy.get_param("~control_topic_name", "/cmd_vel"), Twist, queue_size=1)
         rospy.Timer(rospy.Duration(0.03), self.drive_callback)
 
@@ -184,6 +187,12 @@ class LimoController:
         '''
         self.e_stop = _data.data
 
+    def bump_detect_callback(self, _data):
+        '''
+            방지 턱 여부 결정
+        '''
+        self.bump = _data.data
+
 
     def lane_x_callback(self, _data):
         '''
@@ -270,9 +279,15 @@ class LimoController:
                 drive_data.linear.x = 0.0
                 drive_data.angular.z = 0.0
                 
-            
             else:
-                if (self.marker_0 == 1):
+                if (self.bump == "bump"):
+                    self.loop_time = rospy.get_time()
+                    self.wait_time = rospy.get_time()
+                    while (self.wait_time - self.loop_time <= 3):
+                        self.wait_time = rospy.get_time()
+                    self.marker_0 = 0
+
+                elif (self.marker_0 == 1):
                     self.loop_time = rospy.get_time()
                     self.wait_time = rospy.get_time()
                     while (self.wait_time - self.loop_time <= 3):

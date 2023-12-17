@@ -49,4 +49,8 @@
       <param name="lidar_topic_name" value="/scan"/>
    </node>
 
+   <node name="imu" pkg="limo_application" type="imu.py" output="log">
+      
+   </node>
+
 </launch> 
