@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # limo_application/scripts/lane_detection/control.py
 # WeGo LIMO Pro를 이용한 주행 코드
-# mk2-1
+# mk2-1..
 
 import rospy
 import os
