@@ -65,7 +65,7 @@ class LidarObjectDetector:
         if cnt >= self.E_STOP_COUNT:
             self.warn_pub.publish("back")
         else:
-            self.warn_pub.publish("Safe")
+            self.warn_pub.publish("nono")
 
 def run():
     new_class = LidarObjectDetector()
