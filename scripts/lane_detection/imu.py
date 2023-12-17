@@ -12,7 +12,7 @@ class limo_imu:
         self.linear_acceleration_x = 0
         self.linear_acceleration_z = 0
         self.pitch = 0
-        self.start_bump = math.pi / 48
+        self.start_bump = math.pi / 53
         self.last_bump = -(math.pi / 40)
         self.loop_time = 0
         rospy.Subscriber("/imu", Imu, self.pitch_calculate_callback)
