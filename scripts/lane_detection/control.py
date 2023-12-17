@@ -265,7 +265,6 @@ class LimoController:
                         rospy.logwarn("1111111111111111111111")
                         if self.wait_time - self.loop_time >= 0.5:
                             self.wait_time = rospy.get_time()
-                            drive_data.angular.z = 1.4
                             self.rrr = 1
                     else:
                         self.loop_time = rospy.get_time()
@@ -278,6 +277,7 @@ class LimoController:
                                 rospy.logwarn("+++++++++++++++++++++++++")
                         else:
                             self.lloop_time = rospy.get_time()
+                            drive_data.angular.z = 1.4
                             rospy.logwarn("=====================")
 
                 elif (self.marker_2 == 1):
@@ -303,6 +303,7 @@ class LimoController:
             elif self.limo_mode == "ackermann":
                 if drive_data.linear.x == 0:
                     drive_data.angular.z = 0
+                    rospy.loginfo("-/-/--/-//-/-/-/-/-/-/---/--/-/-/-/-/-/-/-/")
                 else:
                     drive_data.angular.z = \
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
