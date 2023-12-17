@@ -123,26 +123,54 @@ class LimoController:
                 if marker.id == 0:  # 정지 마커
                     if self.marker_00 == 0:
                         self.marker_0 = 1
-                        self.marker_00 = 1              
+                        self.marker_00 = 1    
+                    else:
+                        if (self.marker_0 == 0):
+                            self.marker_00 = 0
+                        if (self.marker_1 == 0):
+                            self.marker_11 = 0
+                        if (self.marker_2 == 0):
+                            self.marker_22 = 0          
                 # id가 1번일 경우
                 if marker.id == 1: #오른쪽
                     if self.marker_11 == 0:
                         self.marker_1 = 1
                         self.marker_11 = 1
+                    else:
+                        if (self.marker_0 == 0):
+                            self.marker_00 = 0
+                        if (self.marker_1 == 0):
+                            self.marker_11 = 0
+                        if (self.marker_2 == 0):
+                            self.marker_22 = 0     
                 # id가 2번일 경우
                 if marker.id == 2: #왼쪽
                     if self.marker_22 == 0:
                         self.marker_2 = 1
                         self.marker_22 = 1
+                    else:
+                        if (self.marker_0 == 0):
+                            self.marker_00 = 0
+                        if (self.marker_1 == 0):
+                            self.marker_11 = 0
+                        if (self.marker_2 == 0):
+                            self.marker_22 = 0     
                 # id가 3일 경우 
                 if marker.id == 3: #주차
-                   if self.marker_33 == 0:
+                    if self.marker_33 == 0:
                         self.marker_3 = 1
                         self.marker_33 = 1
+                    else:
+                        if (self.marker_0 == 0):
+                            self.marker_00 = 0
+                        if (self.marker_1 == 0):
+                            self.marker_11 = 0
+                        if (self.marker_2 == 0):
+                            self.marker_22 = 0     
                 
                 self.markertime_count = rospy.get_time()
 
-              
+        '''       
         else:
             if (self.markertime - self.markertime_count >= 1):
                 if (self.marker_0 == 0):
@@ -151,6 +179,7 @@ class LimoController:
                     self.marker_11 = 0
                 if (self.marker_2 == 0):
                     self.marker_22 = 0
+                    '''
 
             
             
