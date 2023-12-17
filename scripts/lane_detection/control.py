@@ -283,8 +283,9 @@ class LimoController:
 
         try:
             if self.e_stop == "Warning":
-                drive_data.linear.x = 0.0
-                drive_data.angular.z = 0.0
+                if self.marker_3 != 1:   
+                    drive_data.linear.x = 0.0
+                    drive_data.angular.z = 0.0
             
             elif (self.bump == "bump"):
                 drive_data.linear.x = self.BASE_SPEED / 2
@@ -393,7 +394,8 @@ class LimoController:
                             drive_data.angular.z = -1.4
                     else:
                         rospy.logwarn("0000000000000000000000000000")
-                        drive_data.linear.x = self.BASE_SPEED 
+                        drive_data.linear.x = self.BASE_SPEED / 2
+                        drive_data.angular.z = 0
 
                     #rospy.logwarn("marker 2 is there , Left!")
                     
