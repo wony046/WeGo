@@ -410,7 +410,9 @@ class LimoController:
                     else:
                         rospy.logwarn("0000000000000000000000000000")
                         drive_data.linear.x = self.BASE_SPEED / 1.2
-                        
+                        if(self.marker_distance <= 0.2):
+                            drive_data.angular.z = 0
+                            rospy.logwarn("*****************")
                     #rospy.logwarn("marker 2 is there , Left!")
                     
                     
