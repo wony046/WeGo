@@ -167,6 +167,12 @@ class LimoController:
             if (self.markertime - self.markertime_count >= 1):
                 if (self.marker_0 == 0):
                     self.marker_00 = 0
+                if (self.marker_1 == 0):
+                    self.marker_11 = 0
+                if (self.marker_2 == 0):
+                    self.marker_22 = 0
+                if (self.marker_3 == 0):
+                    self.marker_22 = 0
                     
 
             
@@ -289,12 +295,23 @@ class LimoController:
                     if self.rrr == 1:
                         if (self.right == 0 and self.left == 0):
                             self.marker_1 = 0
+                            self.rrr = 0
                         else:
                             self.lloop_time = rospy.get_time()
                             drive_data.angular.z = -1.4
 
 
                 elif (self.marker_2 == 1):
+                    self.loop_time = rospy.get_time()
+                    self.wait_time = rospy.get_time()
+                    while (self.wait_time - self.loop_time <= 3):
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        self.wait_time = rospy.get_time()
+                    self.marker_2 = 0
+                    #rospy.logwarn("marker 2 is there , Left!")
+
+                elif (self.marker_3 == 1):
                     self.loop_time = rospy.get_time()
                     self.wait_time = rospy.get_time()
                     while (self.wait_time - self.loop_time <= 3):
