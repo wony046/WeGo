@@ -244,7 +244,7 @@ class LimoController:
         
 
         if (self.left == 0 and self.right == 0):
-            self.true_distance_to_ref = self.right_distance_to_ref
+            self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
             #rospy.logwarn("both")
             
