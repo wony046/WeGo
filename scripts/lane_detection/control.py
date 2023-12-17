@@ -79,6 +79,7 @@ class LimoController:
 
         self.ppp = 0
         self.back = 0
+        self.back1 = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -399,6 +400,7 @@ class LimoController:
                                 self.marker_3 = 0
                                 self.ppp = 0
                                 self.back = 0
+                                self.back1 = 0
 
                         else:
                             rospy.logwarn("lllllllllllllllllllllllllll")
@@ -412,7 +414,9 @@ class LimoController:
                     else:
                         rospy.logwarn("0000000000000000000000000000")
                         drive_data.linear.x = self.BASE_SPEED / 1.2
-                        if(self.marker_distance <= 0.55):
+                        if(self.true_distance_to_ref * self.LATERAL_GAIN == 0):
+                            self.back1 = 1
+                        if self.back1 == 1:
                             drive_data.angular.z = 0.0
                             rospy.logwarn("*****************")
 
