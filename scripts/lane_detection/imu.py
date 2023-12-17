@@ -31,6 +31,8 @@ class limo_imu:
                     #self.imu_pub.publish("not_bump")
             else:
                 self.imu_pub.publish("not_bump")
+        else:
+            self.imu_pub.publish("not_bump")
 
 def run():
     new_class = limo_imu()
