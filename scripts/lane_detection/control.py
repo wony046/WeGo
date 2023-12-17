@@ -261,6 +261,7 @@ class LimoController:
                 elif (self.marker_1 == 1):
                     #rospy.logwarn("Marker 1 dedect!")
                     self.wait_time = rospy.get_time()
+                    drive_data.linear.x = self.BASE_SPEED
                     if (self.right == 1):
                         rospy.logwarn("1111111111111111111111")
                         if self.wait_time - self.loop_time >= 0.5:
