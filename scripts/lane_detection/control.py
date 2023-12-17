@@ -392,6 +392,7 @@ class LimoController:
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = -1.4
                     else:
+                        rospy.logwarn("0000000000000000000000000000")
                         drive_data.linear.x = self.BASE_SPEED 
 
                     #rospy.logwarn("marker 2 is there , Left!")
