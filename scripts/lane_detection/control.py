@@ -71,6 +71,7 @@ class LimoController:
         self.marker_distance = 0
 
         self.rrr = 0
+        self.lll = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -302,14 +303,23 @@ class LimoController:
 
 
                 elif (self.marker_2 == 1):
-                    self.loop_time = rospy.get_time()
+                    #rospy.logwarn("Marker 1 dedect!")
                     self.wait_time = rospy.get_time()
-                    while (self.wait_time - self.loop_time <= 3):
-                        drive_data.linear.x = 0.0
-                        drive_data.angular.z = 0.0
-                        self.wait_time = rospy.get_time()
-                    self.marker_2 = 0
-                    #rospy.logwarn("marker 2 is there , Left!")
+                    drive_data.linear.x = self.BASE_SPEED
+                    if (self.left == 1):
+                        if self.wait_time - self.loop_time >= 0.65:
+                            self.wait_time = rospy.get_time()
+                            self.lll = 1
+                    else:
+                        self.loop_time = rospy.get_time()
+
+                    if self.rrr == 1:
+                        if (self.right == 0 and self.left == 0):
+                            self.marker_1 = 0
+                            self.lll = 0
+                        else:
+                            self.lloop_time = rospy.get_time()
+                            drive_data.angular.z = 1.4
 
                 elif (self.marker_3 == 1):
                     self.loop_time = rospy.get_time()
@@ -318,7 +328,7 @@ class LimoController:
                         drive_data.linear.x = 0.0
                         drive_data.angular.z = 0.0
                         self.wait_time = rospy.get_time()
-                    self.marker_2 = 0
+                    self.marker_3 = 0
                     #rospy.logwarn("marker 2 is there , Left!")
                     
                         
