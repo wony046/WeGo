@@ -335,14 +335,14 @@ class LimoController:
                                 self.marker_2 = 0
                                 self.lll = 0
                         else:
-                            self.lloop_time = rospy.get_time()
-                            drive_data.angular.z = 1.4
                             if self.lll2 == 1:
-                                for i in range(3000):
+                                for i in range(100):
+                                    self.lloop_time = rospy.get_time()
                                     drive_data.linear.x = 0.0
                                     drive_data.angular.z = 1.4
                                 self.lll2 = 0
                             else:
+                                self.lloop_time = rospy.get_time()
                                 drive_data.angular.z = 1.4
                                 drive_data.linear.x = self.BASE_SPEED
 
