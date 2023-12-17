@@ -368,7 +368,8 @@ class LimoController:
 
 
                 elif (self.marker_3 == 1):
-                    if self.parking == "back" :
+                    rospy.loginfo("kkkk")
+                    if self.parking == "back":
                         self.back = 1
 
                     if self.back == 1:
