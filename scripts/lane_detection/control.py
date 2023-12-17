@@ -40,6 +40,7 @@ class LimoController:
         #self.crosswalk_detected = False
         #self.yolo_object = "green"
         self.e_stop = "Safe"
+        self.parking = "nono"
         #self.is_pedestrian_stop_available = True
         #self.pedestrian_stop_time = 5.0
         #self.pedestrian_stop_last_time = rospy.Time.now().to_sec()
@@ -75,6 +76,8 @@ class LimoController:
         self.lll2 = 0
 
         self.bump = "not_bump"
+
+        self.ppp = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -88,6 +91,7 @@ class LimoController:
         #rospy.Subscriber("/limo/yolo_object", ObjectArray, self.yolo_object_callback)
         rospy.Subscriber("/limo/lidar_warning", String, self.lidar_warning_callback)
         rospy.Subscriber("/limo/imu_pitch", String, self.bump_detect_callback)
+        rospy.Subscriber("/limo/parking", String, self.parking_callback)
         self.drive_pub = rospy.Publisher(rospy.get_param("~control_topic_name", "/cmd_vel"), Twist, queue_size=1)
         rospy.Timer(rospy.Duration(0.03), self.drive_callback)
 
@@ -193,6 +197,12 @@ class LimoController:
             방지 턱 여부 결정
         '''
         self.bump = _data.data
+    
+    def parking_callback(self, _data):
+        '''
+            주차시 벽과 거리 측정
+        '''
+        self.parking = _data.data
 
 
     def lane_x_callback(self, _data):
@@ -217,9 +227,6 @@ class LimoController:
         else:
             self.right_distance_to_ref = self.right_REF_X - _data.data
             self.right = 0   
-            
-
-
 
 
     def reconfigure_callback(self, _config, _level):
@@ -359,13 +366,27 @@ class LimoController:
 
 
                 elif (self.marker_3 == 1):
-                    self.loop_time = rospy.get_time()
-                    self.wait_time = rospy.get_time()
-                    while (self.wait_time - self.loop_time <= 3):
-                        drive_data.linear.x = 0.0
-                        drive_data.angular.z = 0.0
-                        self.wait_time = rospy.get_time()
-                    self.marker_3 = 0
+                    if self.parking == "back" :
+                        if self.right == 1 and self.left == 1:
+                            if self.ppp == 0:
+                                self.ppp = 1
+                            if self.ppp == 2:
+                                self.loop_time = rospy.get_time()
+                                self.wait_time = rospy.get_time()
+                                while (self.wait_time - self.loop_time <= 1):
+                                    self.wait_time = rospy.get_time()
+                                    drive_data.linear.x = -(self.BASE_SPEED / 2)
+                                    drive_data.angular.z = 0.0
+                                    self.wait_time = rospy.get_time()
+                                self.marker_3 = 0
+                                self.ppp = 0
+
+                        else:
+                            if self.ppp == 1:
+                                self.ppp =2
+                            drive_data.linear.x = -(self.BASE_SPEED / 2)
+                            drive_data.angular.z = -1.4
+                    
                     #rospy.logwarn("marker 2 is there , Left!")
                     
                     
