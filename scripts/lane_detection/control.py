@@ -372,7 +372,7 @@ class LimoController:
                     if (self.parking == "back"):
                         self.parking_start_time = rospy.get_time() #지역변수
                         self.parking_loop_time = rospy.get_time() #지역변수
-                        while(self.parking_loop_time - self.parking_start_time <= 2):
+                        while(self.parking_loop_time - self.parking_start_time <= 4):
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = -1.5
                             drive_data.angular.z = \
@@ -425,9 +425,9 @@ class LimoController:
 
                     else:
                         drive_data.linear.x = self.BASE_SPEED
-                        if (self.marker_distance < 0.7 and drive_data.linear.x >= 1.3):
+                        if (self.marker_distance < 0.5 and drive_data.linear.x >= 1.3):
                             rospy.loginfo(self.marker_distance)
-                            drive_data.linear.x = self.BASE_SPEED - 0.01
+                            drive_data.linear.x = self.BASE_SPEED - 0.001
                         else:
                             drive_data.linear.x = (self.BASE_SPEED / 2)
 
