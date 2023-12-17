@@ -131,7 +131,7 @@ class LimoController:
                 # id가 0번일 경우
                 self.marker_distance = marker.pose.pose.position.x
                 rospy.loginfo(self.marker_distance)
-                if marker.id == 0 :  # 정지 마커
+                if marker.id == 0 and self.marker_distance >= 0.1:  # 정지 마커
                     if self.marker_00 == 0:
                         self.marker_0 = 1
                         self.marker_00 = 1    
@@ -141,7 +141,7 @@ class LimoController:
                         if (self.marker_2 == 0):
                             self.marker_22 = 0          
                 # id가 1번일 경우
-                if marker.id == 1 : #오른쪽
+                if marker.id == 1 and self.marker_distance >= 0.1: #오른쪽
                     if self.marker_11 == 0:
                         self.marker_1 = 1
                         self.marker_11 = 1
@@ -153,7 +153,7 @@ class LimoController:
                         if (self.marker_3 == 0):
                             self.marker_33 = 0     
                 # id가 2번일 경우
-                if marker.id == 2 : #왼쪽
+                if marker.id == 2 and self.marker_distance >= 0.1: #왼쪽
                     if self.marker_22 == 0:
                         self.marker_2 = 1
                         self.marker_22 = 1
@@ -165,7 +165,7 @@ class LimoController:
                         if (self.marker_3 == 0):
                             self.marker_33 = 0   
                 # id가 3일 경우 
-                if marker.id == 3 : #주차
+                if marker.id == 3 and self.marker_distance >= 0.1: #주차
                     if self.marker_33 == 0:
                         self.marker_3 = 1
                         self.marker_33 = 1
@@ -188,13 +188,7 @@ class LimoController:
                     self.marker_11 = 0
                 if (self.marker_2 == 0):
                     self.marker_22 = 0
-                if (self.marker_3 == 0):
-                    self.marker_33 = 0 
                
-                    
-
-            
-            
     def lidar_warning_callback(self, _data):
         '''
             장애물 유무 저장
@@ -293,7 +287,8 @@ class LimoController:
 
         try:
             if self.e_stop == "Warning":
-                if self.marker_3 == 0:   
+                rospy.loginfo("E-STOP!!!!")
+                if self.marker_3 != 1:   
                     drive_data.linear.x = 0.0
                     drive_data.angular.z = 0.0
             
@@ -336,7 +331,7 @@ class LimoController:
 
 
                 elif (self.marker_2 == 1):
-                    if self.marker_3 == 0:
+                    if self.marker_3 != 1:
                         #rospy.logwarn("Marker 1 dedect!")
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
@@ -373,66 +368,58 @@ class LimoController:
                                 drive_data.angular.z = 1.4
                                 if self.lll2 == 1:
                                     self.lll2 = 2
-                    
-
 
                 elif (self.marker_3 == 1):
-                    rospy.loginfo("kkkk")
-                    if self.parking == "back":
-                        self.back = 1
-
-                    if self.back == 1:
-                        rospy.logwarn("------------------------")
-                        if self.right == 1 and self.left == 1:
-                            if self.ppp == 0:
-                                self.ppp = 1
-                                rospy.logwarn("===================")
-                            if self.ppp == 1:
-                                drive_data.linear.x = -(self.BASE_SPEED / 2)
-                                drive_data.angular.z = -1.4
-                            if self.ppp == 2:
-                                self.ppp = 3
-                            if self.ppp == 3:
-                                drive_data.linear.x = -(self.BASE_SPEED / 2)
-                                drive_data.angular.z = -1.4
-                            if self.ppp == 4:
-                                rospy.logwarn("++++++++++++++++++++")
-                                self.loop_time = rospy.get_time()
-                                self.wait_time = rospy.get_time()
-                                while (self.wait_time - self.loop_time <= 2):
-                                    self.wait_time = rospy.get_time()
-                                    drive_data.linear.x = -(self.BASE_SPEED / 2)
-                                    drive_data.angular.z = 0.0
-                                    self.wait_time = rospy.get_time()
-                                    self.drive_pub.publish(drive_data)
-                                    rospy.logwarn("+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+/+//+")
-                                self.marker_3 = 0
-                                self.ppp = 0
-                                self.back = 0
-                                self.back1 = 0
-
-                        else:
-                            rospy.logwarn("lllllllllllllllllllllllllll")
-                            if self.ppp == 1:
-                                rospy.logwarn("////////////////////////")
-                                self.ppp =2
-                            if self.ppp == 3:
-                                self.ppp = 4
+                    if (self.parking == "back"):
+                        self.parking_start_time = rospy.get_time()
+                        while(rospy.get_time() - self.parking_start_time >= 2):
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
-                            drive_data.angular.z = -1.4
-                    else:
-                        rospy.logwarn("0000000000000000000000000000")
-                        drive_data.linear.x = self.BASE_SPEED / 1.2
-                        if(self.true_distance_to_ref * self.LATERAL_GAIN == 0):
-                            self.back1 = 1
-                        if self.back1 == 1:
-                            drive_data.angular.z = -0.2
-                            rospy.logwarn("*****************")
+                            drive_data.angular.z = -1.5
+                            drive_data.angular.z = \
+                            math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                            self.drive_pub.publish(drive_data)
 
+                        self.parking_start_time = rospy.get_time()
+                        while(rospy.get_time() - self.parking_start_time >= 1):
+                            rospy.loginfo("parking......")
+                    
+                        if (self.marker_1 == 1):
+                            rospy.logwarn("righting......")
+                            self.parking_start_time = rospy.get_time()
+                            while(rospy.get_time() - self.parking_start_time >= 0.65):
+                                drive_data.linear.x = self.BASE_SPEED
+                                drive_data.angular.z = 0.0
+                                self.drive_pub.publish(drive_data)
+                            self.parking_start_time = rospy.get_time()
+                            while(rospy.get_time() - self.parking_start_time >= 1.5):
+                                drive_data.linear.x = self.BASE_SPEED
+                                drive_data.angular.z = -1.5
+                                drive_data.angular.z = \
+                                math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                                self.drive_pub.publish(drive_data)
                         
-                    #rospy.logwarn("marker 2 is there , Left!")
-                    
-                    
+                        else:
+                            rospy.logwarn("lefting......")
+                            self.parking_start_time = rospy.get_time()
+                            while(rospy.get_time() - self.parking_start_time >= 0.65):
+                                drive_data.linear.x = self.BASE_SPEED
+                                drive_data.angular.z = 0.0
+                                self.drive_pub.publish(drive_data)
+                            self.parking_start_time = rospy.get_time()
+                            while(rospy.get_time() - self.parking_start_time >= 1.5):
+                                drive_data.linear.x = self.BASE_SPEED
+                                drive_data.angular.z = 1.5
+                                drive_data.angular.z = \
+                                math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                                self.drive_pub.publish(drive_data)
+                        self.marker_3 = 0
+
+                    else:
+                        drive_data.linear.x = self.BASE_SPEED
+                        if (self.marker_distance < 0.55):
+                            rospy.loginfo(self.marker_distance)
+                            drive_data.linear.x = (self.BASE_SPEED / 2)
+
                 else:
                     drive_data.linear.x = self.BASE_SPEED
                     #rospy.loginfo("All Clear, Just Drive!")
@@ -442,7 +429,6 @@ class LimoController:
             elif self.limo_mode == "ackermann":
                 if drive_data.linear.x == 0:
                     drive_data.angular.z = 0
-
                 else:
                     drive_data.angular.z = \
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
