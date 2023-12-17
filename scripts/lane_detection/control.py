@@ -264,10 +264,10 @@ class LimoController:
                             self.wait_time = rospy.get_time()
                             drive_data.angular.z = 1.4
                             if (self.right == 0):
-                                if self.wait_time - self.loop_time >= 0.5:
+                                if self.wait_time - self.lloop_time >= 0.5:
                                     self.marker_1 = 0
                             else:
-                                self.loop_time = rospy.get_time()
+                                self.lloop_time = rospy.get_time()
                     else:
                         self.loop_time = rospy.get_time()
 
