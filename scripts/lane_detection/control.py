@@ -367,10 +367,13 @@ class LimoController:
 
                 elif (self.marker_3 == 1):
                     if self.parking == "back" :
+                        rospy.logwarn("------------------------")
                         if self.right == 1 and self.left == 1:
                             if self.ppp == 0:
                                 self.ppp = 1
+                                rospy.logwarn("===================")
                             if self.ppp == 2:
+                                rospy.logwarn("++++++++++++++++++++")
                                 self.loop_time = rospy.get_time()
                                 self.wait_time = rospy.get_time()
                                 while (self.wait_time - self.loop_time <= 1):
@@ -383,7 +386,9 @@ class LimoController:
                                 self.ppp = 0
 
                         else:
+                            rospy.logwarn("lllllllllllllllllllllllllll")
                             if self.ppp == 1:
+                                rospy.logwarn("////////////////////////")
                                 self.ppp =2
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = -1.4
