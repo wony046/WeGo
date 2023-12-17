@@ -329,7 +329,7 @@ class LimoController:
                     if self.lll == 1:
                         if (self.right == 0 and self.left == 0):
                             if self.wait_time - self.lloop_time >= 1:
-                                self.marker_1 = 0
+                                self.marker_2 = 0
                                 self.lll = 0
                         else:
                             self.lloop_time = rospy.get_time()
