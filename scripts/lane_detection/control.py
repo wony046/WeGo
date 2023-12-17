@@ -367,7 +367,8 @@ class LimoController:
 
 
                 elif (self.marker_3 == 1):
-                    if self.parking == "back" :
+                    rospy.loginfo("kkkk")
+                    if self.parking == "back":
                         self.back = 1
 
                     if self.back == 1:
@@ -411,7 +412,7 @@ class LimoController:
                         rospy.logwarn("0000000000000000000000000000")
                         drive_data.linear.x = self.BASE_SPEED / 1.2
                         if(self.marker_distance <= 0.2):
-                            drive_data.angular.z = 0
+                            drive_data.angular.z = 0.0
                             rospy.logwarn("*****************")
                     #rospy.logwarn("marker 2 is there , Left!")
                     
