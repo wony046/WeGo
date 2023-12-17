@@ -258,30 +258,26 @@ class LimoController:
                 
                 elif (self.marker_1 == 1):
                     #rospy.logwarn("Marker 1 dedect!")
-                    while (self.marker_distance >= 0.7):
-                        drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = \
-                    math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                        self.drive_pub.publish(drive_data)
-                        if (self.right == 1):
-                            break
-                        #rospy.loginfo(self.marker_1)
-                    #rospy.logwarn("Marker 1 dedect!")
-                    self.z = 0.0
-                    drive_data.linear.x = self.BASE_SPEED
-                    self.z = drive_data.angular.z
-                    while(drive_data.angular.z >= -30):
-                        rospy.logwarn("Marker 1 dedect!")
-                        drive_data.angular.z = drive_data.angular.z - 3.0
-                        self.z = drive_data.angular.z
-                        self.drive_pub.publish(drive_data)
-                        if (self.right == 0):
-                            break
-                        else:
-                            drive_data.angular.z = self.z 
-                            self.drive_pub.publish(drive_data)
-                    self.marker_1 = 0
-                        
+                    self.wait_time = rospy.get_time()
+                    if (self.right == 1):
+                        if self.wait_time - self.loop_time >= 0.5:
+                            while(drive_data.angular.z >= -30):
+                                self.wait_time = rospy.get_time()
+                                rospy.logwarn("Marker 1 dedect!")
+                                drive_data.angular.z = drive_data.angular.z - 3.0
+                                self.z = drive_data.angular.z
+                                self.drive_pub.publish(drive_data)
+                                if (self.right == 0):
+                                    if self.wait_time - self.loop_time >= 0.5:
+                                        break
+                                else:
+                                    self.loop_time = rospy.get_time()
+                                    drive_data.angular.z = self.z 
+                                    self.drive_pub.publish(drive_data)
+                            self.marker_1 = 0
+                    else:
+                        self.loop_time = rospy.get_time()
+
                 elif (self.marker_2 == 1):
                     self.loop_time = rospy.get_time()
                     self.wait_time = rospy.get_time()
