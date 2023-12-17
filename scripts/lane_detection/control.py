@@ -339,6 +339,7 @@ class LimoController:
                             drive_data.angular.z = 1.4
                             if self.lll2 == 1:
                                 for i in range(3000):
+                                    drive_data.linear.x = 0.0
                                     drive_data.angular.z = 1.4
                                 self.lll2 = 0
                             else:
