@@ -12,24 +12,23 @@ class limo_imu:
         self.linear_acceleration_x = 0
         self.linear_acceleration_z = 0
         self.pitch = 0
-        self.start_bump = math.pi / 30
-        self.last_bump = -(math.pi / 30)
+        self.start_bump = math.pi / 36
+        self.last_bump = -(math.pi / 36)
         self.loop_time = 0
         rospy.Subscriber("/imu", Imu, self.pitch_calculate_callback)
         self.imu_pub = rospy.Publisher("/limo/imu_pitch", String, queue_size=2)
     
     def pitch_calculate_callback(self, data):
-        self.wait_time = rospy.get_time()
+        #self.wait_time = rospy.get_time()
         self.linear_acceleration_x = data.linear_acceleration.x
         self.linear_acceleration_z = data.linear_acceleration.z
-        if self.linear_acceleration_z != 0:
+        if ((self.linear_acceleration_x >= 1.7 or self.linear_acceleration_x <= -1.7) and self.linear_acceleration_z != 0):
             self.pitch = math.atan(self.linear_acceleration_x / self.linear_acceleration_z)
             if (self.pitch >= self.start_bump or self.pitch <= self.last_bump):
-                if self.wait_time - self.loop_time >= 0.5:
-                    self.imu_pub.publish("bump")
-                else:
-                    self.loop_time = rospy.get_time()
-                    self.imu_pub.publish("not_bump")
+                #if self.wait_time - self.loop_time >= 0.5:
+                self.imu_pub.publish("bump")
+                    #self.loop_time = rospy.get_time()
+                    #self.imu_pub.publish("not_bump")
             else:
                 self.imu_pub.publish("not_bump")
 
