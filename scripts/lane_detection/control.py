@@ -339,6 +339,15 @@ class LimoController:
                                     self.marker_2 = 0
                                     self.lll = 0
                                     self.lll2 = 0
+                        elif self.right == 1 and self.left == 1:
+                            if self.lll2 == 2:
+                                drive_data.angular.z = 0
+                                self.marker_2 = 0
+                                self.lll = 0
+                                self.lll2 = 0
+                            else:
+                                self.lloop_time = rospy.get_time()
+                                drive_data.angular.z = 1.4
                         else:
                             self.lloop_time = rospy.get_time()
                             drive_data.angular.z = 1.4
