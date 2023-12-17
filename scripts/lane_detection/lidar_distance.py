@@ -20,7 +20,7 @@ class LidarObjectDetector:
         Warning Topic Publisher (String Type)  
     '''
     def __init__(self):
-        rospy.init_node('lidar_e_stop', anonymous=False)
+        rospy.init_node('lidar_parking', anonymous=False)
         srv = Server(lidar_e_stopConfig, self.reconfigure_callback)
         self.sub_ls = rospy.Subscriber(rospy.get_param("lidar_topic_name", "/scan"), LaserScan, self.lidar_callback)
         self.warn_pub = rospy.Publisher("/limo/parking", String, queue_size=2)
