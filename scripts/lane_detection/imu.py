@@ -12,8 +12,8 @@ class limo_imu:
         self.linear_acceleration_x = 0
         self.linear_acceleration_z = 0
         self.pitch = 0
-        self.start_bump = math.pi / 29
-        self.last_bump = -(math.pi / 27)
+        self.start_bump = math.pi / 30
+        self.last_bump = -(math.pi / 30)
         self.loop_time = 0
         rospy.Subscriber("/imu", Imu, self.pitch_calculate_callback)
         self.imu_pub = rospy.Publisher("/limo/imu_pitch", String, queue_size=2)
