@@ -149,7 +149,9 @@ class LimoController:
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
                         if (self.marker_2 == 0):
-                            self.marker_22 = 0     
+                            self.marker_22 = 0  
+                        if (self.marker_3 == 0):
+                            self.marker_33 = 0     
                 # id가 2번일 경우
                 if marker.id == 2 and self.marker_distance >= 0.1: #왼쪽
                     if self.marker_22 == 0:
@@ -159,7 +161,9 @@ class LimoController:
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
                         if (self.marker_2 == 0):
-                            self.marker_22 = 0     
+                            self.marker_22 = 0  
+                        if (self.marker_3 == 0):
+                            self.marker_33 = 0   
                 # id가 3일 경우 
                 if marker.id == 3 and self.marker_distance >= 0.1: #주차
                     if self.marker_33 == 0:
@@ -169,7 +173,9 @@ class LimoController:
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
                         if (self.marker_2 == 0):
-                            self.marker_22 = 0     
+                            self.marker_22 = 0  
+                        if (self.marker_3 == 0):
+                            self.marker_33 = 0    
                 
                 self.markertime_count = rospy.get_time()
 
@@ -418,7 +424,7 @@ class LimoController:
                         if(self.true_distance_to_ref * self.LATERAL_GAIN == 0):
                             self.back1 = 1
                         if self.back1 == 1:
-                            drive_data.angular.z = 0.0
+                            drive_data.angular.z = 0.3
                             rospy.logwarn("*****************")
 
                         
