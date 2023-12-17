@@ -131,7 +131,7 @@ class LimoController:
                 # id가 0번일 경우
                 self.marker_distance = marker.pose.pose.position.x
                 rospy.loginfo(self.marker_distance)
-                if marker.id == 0 and self.marker_distance >= 0.1:  # 정지 마커
+                if marker.id == 0 :  # 정지 마커
                     if self.marker_00 == 0:
                         self.marker_0 = 1
                         self.marker_00 = 1    
@@ -141,7 +141,7 @@ class LimoController:
                         if (self.marker_2 == 0):
                             self.marker_22 = 0          
                 # id가 1번일 경우
-                if marker.id == 1 and self.marker_distance >= 0.1: #오른쪽
+                if marker.id == 1 : #오른쪽
                     if self.marker_11 == 0:
                         self.marker_1 = 1
                         self.marker_11 = 1
@@ -153,7 +153,7 @@ class LimoController:
                         if (self.marker_3 == 0):
                             self.marker_33 = 0     
                 # id가 2번일 경우
-                if marker.id == 2 and self.marker_distance >= 0.1: #왼쪽
+                if marker.id == 2 : #왼쪽
                     if self.marker_22 == 0:
                         self.marker_2 = 1
                         self.marker_22 = 1
@@ -165,7 +165,7 @@ class LimoController:
                         if (self.marker_3 == 0):
                             self.marker_33 = 0   
                 # id가 3일 경우 
-                if marker.id == 3 and self.marker_distance >= 0.1: #주차
+                if marker.id == 3 : #주차
                     if self.marker_33 == 0:
                         self.marker_3 = 1
                         self.marker_33 = 1
