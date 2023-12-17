@@ -78,6 +78,7 @@ class LimoController:
         self.bump = "not_bump"
 
         self.ppp = 0
+        self.back = 0
         #self.bool = False
         #self.current_time = rospy.get_time()
 
@@ -367,6 +368,9 @@ class LimoController:
 
                 elif (self.marker_3 == 1):
                     if self.parking == "back" :
+                        self.back = 1
+
+                    if self.back == 1:
                         rospy.logwarn("------------------------")
                         if self.right == 1 and self.left == 1:
                             if self.ppp == 0:
@@ -392,6 +396,7 @@ class LimoController:
                                     self.drive_pub.publish(drive_data)
                                 self.marker_3 = 0
                                 self.ppp = 0
+                                self.back = 0
 
                         else:
                             rospy.logwarn("lllllllllllllllllllllllllll")
