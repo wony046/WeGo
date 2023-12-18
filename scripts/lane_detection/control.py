@@ -291,8 +291,10 @@ class LimoController:
                     if (self.right_lane == 1 and self.right_turn == 0): #우측 차선이 인식이 안 되면..
                         if ((self.marker_1_start_time - self.marker_1_loop_time) >= 0.65):
                             self.right_turn = 1
+                        else:
+                            self.marker_1_loop_time = rospy.get_time()
                     else:
-                        self.marker_1_loop_time = rospy.get_time()
+                        pass
 
                     if (self.right_turn == 1):
                         rospy.loginfo("right_turn start!")
@@ -325,8 +327,10 @@ class LimoController:
                     if (self.left_lane == 1 and self.left_turn == 0): #우측 차선이 인식이 안 되면..
                         if ((self.marker_2_start_time - self.marker_2_loop_time) >= 0.65):
                             self.left_turn = 1
+                        else:
+                            self.marker_2_loop_time = rospy.get_time()
                     else:
-                        self.marker_2_loop_time = rospy.get_time()
+                        pass
 
                     if (self.left_turn == 1):
                         rospy.loginfo("left_turn start!")
