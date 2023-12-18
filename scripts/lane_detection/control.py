@@ -305,7 +305,7 @@ class LimoController:
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
-                            if (abs(self.roll - self.roll_average) < 0.71 and abs(self.roll - self.roll_average) > 0.69):
+                            if (abs(self.roll - self.roll_average) < 0.78 and abs(self.roll - self.roll_average) > 0.62):
                                 if self.wait_time - self.lloop_time >= 0.4:
                                     self.marker_1 = 0
                                     self.right_count = 0
