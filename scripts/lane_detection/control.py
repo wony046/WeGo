@@ -257,7 +257,7 @@ class LimoController:
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
                         if (self.right_lane == 1):
-                            if self.wait_time - self.loop_time >= 0.65:
+                            if self.wait_time - self.loop_time >= 0.68:
                                 self.wait_time = rospy.get_time()
                                 self.rrr = 1
                         else:
@@ -287,7 +287,7 @@ class LimoController:
                             if self.rrr != 1:
                                 self.roll_average = self.roll
                         if (self.right_lane == 1):
-                            if self.wait_time - self.loop_time >= 1.8:
+                            if self.wait_time - self.loop_time >= 1.1:
                                 self.wait_time = rospy.get_time()
                                 self.rrr = 1
                                 ##self.roll_average = (self.max_roll + self.min_roll)/2
