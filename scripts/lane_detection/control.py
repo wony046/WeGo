@@ -305,27 +305,29 @@ class LimoController:
                                 rospy.logwarn("000000000000000000000")  
                                 self.lloop_time = rospy.get_time()
                                 drive_data.angular.z = -1.4
+                
+                elif (self.marker_3 == 1):
 
-                elif (self.parking == "back"):
-                    self.parking_start_time = rospy.get_time() #지역변수
-                    self.parking_loop_time = rospy.get_time() #지역변수
-                    while(self.parking_loop_time - self.parking_start_time <= 10):
-                        drive_data.linear.x = -(self.BASE_SPEED / 2)
-                        drive_data.angular.z = -1.5
-                        drive_data.angular.z = \
-                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                        self.drive_pub.publish(drive_data)
-                        self.parking_loop_time = rospy.get_time()
-                        if (self.roll_average - 68 <= self.roll):
-                            break
-                    
-                    self.parking_start_time = rospy.get_time()
-                    while(self.parking_loop_time - self.parking_start_time <= 1000):
-                        rospy.loginfo("parking......")
-                        drive_data.linear.x = 0.0
-                        drive_data.angular.z = 0.0
-                        self.drive_pub.publish(drive_data)
-                        self.parking_loop_time = rospy.get_time()
+                    if (self.parking == "back"):
+                        self.parking_start_time = rospy.get_time() #지역변수
+                        self.parking_loop_time = rospy.get_time() #지역변수
+                        while(self.parking_loop_time - self.parking_start_time <= 10):
+                            drive_data.linear.x = -(self.BASE_SPEED / 2)
+                            drive_data.angular.z = -1.5
+                            drive_data.angular.z = \
+                            math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                            self.drive_pub.publish(drive_data)
+                            self.parking_loop_time = rospy.get_time()
+                            if (self.roll_average - 68 <= self.roll):
+                                break
+                        
+                        self.parking_start_time = rospy.get_time()
+                        while(self.parking_loop_time - self.parking_start_time <= 1000):
+                            rospy.loginfo("parking......")
+                            drive_data.linear.x = 0.0
+                            drive_data.angular.z = 0.0
+                            self.drive_pub.publish(drive_data)
+                            self.parking_loop_time = rospy.get_time()
 
                 elif (self.marker_0 == 1):
                     self.loop_time = rospy.get_time()
