@@ -274,24 +274,25 @@ class LimoController:
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
                         if (self.right_lane == 1):
-                            if self.markercount == 0:
-                                self.markercount = 1
-                            if self.markercount == 2:
+                            if self.wait_time - self.loop_time >= 0.65:
                                 self.wait_time = rospy.get_time()
                                 self.rrr = 1
+                                
                         else:
-                            if self.markercount == 1:
-                                self.markercount = 2
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
-                            if (self.right_lane == 0 and self.left_lane == 0):
-                                if self.wait_time - self.lloop_time >= 0.75:
+                            if (self.left_lane == 1):
+                                if self.markercount == 0:
+                                    self.markercount = 1
+                                if self.markercount == 2:
                                     self.marker_1 = 0
                                     self.right_count = 1
                                     self.rrr = 0
-                                    self.markercount = 0
+                                    self.markercount = 2
                             else:
+                                if self.markercount == 1: 
+                                    self.markercount = 2
                                 self.lloop_time = rospy.get_time()
                                 drive_data.angular.z = -1.4
                     else:
