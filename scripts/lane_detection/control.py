@@ -55,8 +55,10 @@ class LimoController:
         self.marker_33 = 0 #주차 마커 재인식 방지
         self.markertime_count = 0 #마커 재인식 변수 초기화
         self.marker_distance = 0 #마커와 Limo 사이의 거리 측정
-        self.rrr = 0
         self.left_trun = 0
+        self.right_trun = 0
+        self.roll_return_right = 1
+        self.roll_return_left = 1
         self.roll_average = None #Imu 센서의 roll값을 받아 평균 계산
         self.roll = None #Imu 센서의 roll값 초기화
         self.min_roll = None #Imu 센서의 최저 roll값 초기화
@@ -233,19 +235,15 @@ class LimoController:
             속도 및 조향을 조절하여 최종 cmd_vel에 Publish
         '''
         
-        
-
         if (self.left_lane == 0 and self.right_lane == 0):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
             #rospy.logwarn("both")
             
-
         if (self.left_lane == 0 and self.right_lane == 1):
             self.true_distance_to_ref = self.distance_to_ref
             self.stay = self.distance_to_ref
             #rospy.logwarn("left_lane")
-            
             
         if (self.left_lane == 1 and self.right_lane == 0):
             if self.e_stop == "ahhhhhhhh":
@@ -259,7 +257,6 @@ class LimoController:
             self.true_distance_to_ref = self.stay
             #rospy.logwarn("none")
         
-
         # print(current_time)
         drive_data = Twist()
         drive_data.angular.z = self.true_distance_to_ref * self.LATERAL_GAIN
@@ -277,35 +274,46 @@ class LimoController:
                 drive_data.angular.z = 0.0
                 
             else:
-                if (self.marker_0 == 1):
+                if (self.marker_0 == 1): #마커 0번 감지 --> 정지
                     self.loop_time = rospy.get_time()
                     self.wait_time = rospy.get_time()
                     while (self.wait_time - self.loop_time <= 3):
-                        drive_data.linear.x = 0.0
-                        drive_data.angular.z = 0.0
                         self.wait_time = rospy.get_time()
                     self.marker_0 = 0
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
-                elif (self.marker_1 == 1):
+                elif (self.marker_1 == 1): #마커 1번 감지 --> 우회전
                     rospy.logwarn("Marker 1 dedect!")
-                    self.wait_time = rospy.get_time()
+                    self.marker_1_start_time = rospy.get_time()
+                    self.marker_1_loop_time = 0.0
                     drive_data.linear.x = self.BASE_SPEED
-                    if (self.right_lane == 1):
-                        if self.wait_time - self.loop_time >= 0.65:
-                            self.wait_time = rospy.get_time()
-                            self.rrr = 1
+                    if (self.right_lane == 1): #우측 차선이 인식이 안 되면..
+                        if ((self.marker_1_start_time - self.marker_1_loop_time) >= 0.8):
+                            self.right_trun = 1
                     else:
-                        self.loop_time = rospy.get_time()
+                        self.marker_1_loop_time = rospy.get_time()
 
-                    if self.rrr == 1:
-                        if (self.right_lane == 0 and self.left_lane == 0):
-                            if self.wait_time - self.lloop_time >= 1:
-                                self.marker_1 = 0
-                                self.rrr = 0
+                    if (self.right_trun == 1):
+                        rospy.loginfo("right_turn start!")
+                        self.right_turn_start_roll = 0.0
+                        if (self.roll_return_right == 0):
+                            self.right_turn_start_roll = self.roll #조금 전진한 후, 자신의 orientation 저장..
+                            self.right_turn_last_roll = 0.0
+                            self.roll_return_right = 1
                         else:
-                            self.lloop_time = rospy.get_time()
-                            drive_data.angular.z = -1.4
+                            pass                    
+                        
+                        if(abs(self.right_turn_start_roll - self.right_turn_last_roll) >= 68): #90도 회전이 약 70의 Imu roll값의 변화를 가르킴
+                            drive_data.linear.x = self.BASE_SPEED
+                            drive_data.angular.z = -1.5
+                            drive_data.angular.z = \
+                            math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                            self.drive_pub.publish(drive_data)
+                            self.right_turn_last_roll = self.roll #while문을 돌면서, Imu roll값 측정..
+                        else:    
+                            self.right_trun = 0 # 다 회전 한 후, 초기화
+                            self.marker_1 == 0
+                            self.roll_return_right = 0
 
                 elif (self.marker_2 == 1): #마커 2번 감지 --> 좌회전
                     rospy.logwarn("Marker 2 dedect!")
@@ -320,10 +328,11 @@ class LimoController:
 
                     if (self.left_trun == 1):
                         rospy.loginfo("left_turn start!")
-                        if (self.roll_return == 0):
+                        self.left_turn_start_roll = 0.0
+                        if (self.roll_return_left == 0):
                             self.left_turn_start_roll = self.roll #조금 전진한 후, 자신의 orientation 저장..
                             self.left_turn_last_roll = 0.0
-                            self.roll_return = 1
+                            self.roll_return_left = 1
                         else:
                             pass                    
                         
@@ -337,7 +346,7 @@ class LimoController:
                         else:    
                             self.left_trun = 0 # 다 회전 한 후, 초기화
                             self.marker_2 == 0
-                            self.roll_return = 0
+                            self.roll_return_left = 0
 
                 elif (self.marker_3 == 1):
                     if (self.parking == "back"):
@@ -372,7 +381,7 @@ class LimoController:
                         self.marker_3 = 0
                         
                     else:
-                        if (self.marker_distance >= 0.6):
+                        if (self.marker_distance >= 0.2):
                             #rospy.logwarn(self.marker_distance)
                             drive_data.linear.x = self.BASE_SPEED
                             
@@ -386,7 +395,7 @@ class LimoController:
                                 self.min_roll = self.roll
                                 #rospy.loginfo("self.min_roll = {}".format(self.min_roll))
 
-                            self.roll_average = (self.max_roll + self.min_roll) / 1.6
+                            self.roll_average = (self.max_roll + self.min_roll) / 1.8
                             
                         else:
                             drive_data.linear.x = self.BASE_SPEED
