@@ -57,6 +57,8 @@ class LimoController:
         self.marker_distance = 0 #마커와 Limo 사이의 거리 측정
         self.left_trun = 0
         self.right_trun = 0
+        self.roll_return_right = 1
+        self.roll_return_left = 1
         self.roll_average = None #Imu 센서의 roll값을 받아 평균 계산
         self.roll = None #Imu 센서의 roll값 초기화
         self.min_roll = None #Imu 센서의 최저 roll값 초기화
@@ -293,10 +295,10 @@ class LimoController:
 
                     if (self.right_trun == 1):
                         rospy.loginfo("right_turn start!")
-                        if (self.roll_return == 0):
+                        if (self.roll_return_right == 0):
                             self.right_turn_start_roll = self.roll #조금 전진한 후, 자신의 orientation 저장..
                             self.right_turn_last_roll = 0.0
-                            self.roll_return = 1
+                            self.roll_return_right = 1
                         else:
                             pass                    
                         
@@ -310,7 +312,7 @@ class LimoController:
                         else:    
                             self.right_trun = 0 # 다 회전 한 후, 초기화
                             self.marker_1 == 0
-                            self.roll_return = 0
+                            self.roll_return_right = 0
 
                 elif (self.marker_2 == 1): #마커 2번 감지 --> 좌회전
                     rospy.logwarn("Marker 2 dedect!")
@@ -325,10 +327,10 @@ class LimoController:
 
                     if (self.left_trun == 1):
                         rospy.loginfo("left_turn start!")
-                        if (self.roll_return == 0):
+                        if (self.roll_return_left == 0):
                             self.left_turn_start_roll = self.roll #조금 전진한 후, 자신의 orientation 저장..
                             self.left_turn_last_roll = 0.0
-                            self.roll_return = 1
+                            self.roll_return_left = 1
                         else:
                             pass                    
                         
@@ -342,7 +344,7 @@ class LimoController:
                         else:    
                             self.left_trun = 0 # 다 회전 한 후, 초기화
                             self.marker_2 == 0
-                            self.roll_return = 0
+                            self.roll_return_left = 0
 
                 elif (self.marker_3 == 1):
                     if (self.parking == "back"):
