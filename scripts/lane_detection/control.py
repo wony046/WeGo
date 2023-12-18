@@ -313,7 +313,7 @@ class LimoController:
                             self.right_turn_last_roll = self.roll #while문을 돌면서, Imu roll값 측정..
                         else:    
                             self.right_trun = 0 # 다 회전 한 후, 초기화
-                            self.marker_1 == 0
+                            self.marker_1 = 0
                             self.roll_return_right = 0
 
                 elif (self.marker_2 == 1): #마커 2번 감지 --> 좌회전
@@ -347,14 +347,14 @@ class LimoController:
                             self.left_turn_last_roll = self.roll #while문을 돌면서, Imu roll값 측정..
                         else:    
                             self.left_trun = 0 # 다 회전 한 후, 초기화
-                            self.marker_2 == 0
+                            self.marker_2 = 0
                             self.roll_return_left = 0
 
                 elif (self.marker_3 == 1):
                     if (self.parking == "back"):
                         self.parking_start_time = rospy.get_time() #지역변수
                         self.parking_loop_time = rospy.get_time() #지역변수
-                        
+
                         while(self.parking_loop_time - self.parking_start_time <= 10):
                             drive_data.linear.x = -self.BASE_SPEED
                             drive_data.angular.z = -1.5
