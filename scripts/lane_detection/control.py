@@ -285,10 +285,12 @@ class LimoController:
                     #rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1): #마커 1번 감지 --> 우회전
-                    rospy.logwarn("Marker 1 dedect!")
+                    #rospy.logwarn("Marker 1 dedect!")
                     self.marker_1_start_time = rospy.get_time()
                     self.marker_1_loop_time = rospy.get_time()
                     drive_data.linear.x = self.BASE_SPEED
+                    rospy.logwarn(self.right_lane)
+                    rospy.logwarn(self.left_lane)
                     if (self.right_lane == 1 and self.left_lane == 1): #우측, 좌측 차선이 인식이 안 되면..
                         self.right_turn == 1
                         if ((self.marker_1_start_time - self.marker_1_loop_time) >= 0.65):
