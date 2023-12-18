@@ -58,8 +58,6 @@ class LimoController:
         self.left_trun = 0
         self.roll_average = None #Imu 센서의 roll값을 받아 평균 계산
         self.roll = None #Imu 센서의 roll값 초기화
-        self.min_roll = 0 #Imu 센서의 최저 roll값 초기화
-        self.max_roll = 0 #Imu 센서의 최대 roll값 초기화
         self.loop_time = 0
         self.lloop_time = 0
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
@@ -252,17 +250,8 @@ class LimoController:
                 rospy.logwarn("bumpbumpbumpbump")
                 
             else:
-                if (self.marker_0 == 1):
-                    self.loop_time = rospy.get_time()
-                    self.wait_time = rospy.get_time()
-                    while (self.wait_time - self.loop_time <= 3):
-                        drive_data.linear.x = 0.0
-                        drive_data.angular.z = 0.0
-                        self.wait_time = rospy.get_time()
-                    self.marker_0 = 0
-                    rospy.logwarn("marker 0 is there , Stop!")                   
-                
-                elif (self.marker_1 == 1):
+                                   
+                if (self.marker_1 == 1):
                     rospy.logwarn("--------------------------")  
                     if self.right_count == 0:
                         self.wait_time = rospy.get_time()
@@ -317,33 +306,39 @@ class LimoController:
                                 self.lloop_time = rospy.get_time()
                                 drive_data.angular.z = -1.4
 
-                elif (self.marker_3 == 1):
-                    drive_data.angular.z = 0
-                    if (self.parking == "back"):
-                        self.parking_start_time = rospy.get_time() #지역변수
-                        self.parking_loop_time = rospy.get_time() #지역변수
-                        if (abs(self.roll - self.roll_average) > 0.1):
-                            drive_data.linear.x = -self.BASE_SPEED
-                            drive_data.angular.z = -1.4
-                        
-                        self.parking_start_time = rospy.get_time()
-                        while(self.parking_loop_time - self.parking_start_time <= 2):
-                            rospy.loginfo("parking......")
-                            drive_data.linear.x = -(self.BASE_SPEED / 2)
-                            drive_data.angular.z = 0.0
-                            self.drive_pub.publish(drive_data)
-                            self.parking_loop_time = rospy.get_time()
-                        
-                        self.parking_start_time = rospy.get_time()
-                        while(self.parking_loop_time - self.parking_start_time <= 1):
-                            rospy.loginfo("parking......")
-                            drive_data.linear.x = 0.0
-                            drive_data.angular.z = 0.0
-                            self.drive_pub.publish(drive_data)
-                            self.parking_loop_time = rospy.get_time()
+                elif (self.parking == "back"):
+                    self.parking_start_time = rospy.get_time() #지역변수
+                    self.parking_loop_time = rospy.get_time() #지역변수
+                    while(self.parking_loop_time - self.parking_start_time <= 10):
+                        drive_data.linear.x = -(self.BASE_SPEED / 2)
+                        drive_data.angular.z = -1.5
+                        drive_data.angular.z = \
+                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                        self.drive_pub.publish(drive_data)
+                        self.parking_loop_time = rospy.get_time()
+                        if (self.roll_average - 68 <= self.roll):
+                            break
+                    
+                    self.parking_start_time = rospy.get_time()
+                    while(self.parking_loop_time - self.parking_start_time <= 1000):
+                        rospy.loginfo("parking......")
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        self.drive_pub.publish(drive_data)
+                        self.parking_loop_time = rospy.get_time()
 
-                        self.marker_3 = 0
-                        
+                elif (self.marker_0 == 1):
+                    self.loop_time = rospy.get_time()
+                    self.wait_time = rospy.get_time()
+                    while (self.wait_time - self.loop_time <= 3):
+                        drive_data.linear.x = 0.0
+                        drive_data.angular.z = 0.0
+                        self.wait_time = rospy.get_time()
+                    self.marker_0 = 0
+                    rospy.logwarn("marker 0 is there , Stop!") 
+
+
+
                     
                 else:
                     drive_data.linear.x = self.BASE_SPEED
