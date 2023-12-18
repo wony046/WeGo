@@ -62,6 +62,7 @@ class LimoController:
         self.max_roll = 0 #Imu 센서의 최대 roll값 초기화
         self.loop_time = 0
         self.lloop_time = 0
+        self.back = 0 
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
         srv = Server(controlConfig, self.reconfigure_callback)
         rospy.Subscriber("limo_status", LimoStatus, self.limo_status_callback)
@@ -161,6 +162,10 @@ class LimoController:
             주차시 벽과 거리 측정
         '''
         self.parking = _data.data
+        if self.parking == "back":
+            self.back = 0
+        else:
+            self.back = 1
 
 
     def lane_x_callback(self, _data):
@@ -276,7 +281,7 @@ class LimoController:
 
                         if self.rrr == 1:
                             if (self.right_lane == 0 and self.left_lane == 0):
-                                if self.wait_time - self.lloop_time >= 0.6:
+                                if self.wait_time - self.lloop_time >= 0.75:
                                     self.marker_1 = 0
                                     self.right_count = 1
                                     self.rrr = 0
@@ -318,10 +323,10 @@ class LimoController:
                                 drive_data.angular.z = -1.4
 
                 elif (self.marker_3 == 1):
-                    if(self.parking != "back"):
+                    if(self.back != 0):
                         drive_data.angular.z = 0
                         drive_data.linear.x = self.BASE_SPEED
-                    if (self.parking == "back"):
+                    if (self.back == 0):
                         self.parking_start_time = rospy.get_time() #지역변수
                         self.parking_loop_time = rospy.get_time() #지역변수
                         if (abs(self.roll - self.roll_average) > 0.1):
