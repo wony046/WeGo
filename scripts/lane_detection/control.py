@@ -295,9 +295,10 @@ class LimoController:
                             if self.roll <= self.min_roll:
                                 self.min_roll = self.roll
                                 '''
-                            self.roll_average = self.roll
+                            if self.rrr != 1:
+                                self.roll_average = self.roll
                         if (self.right_lane == 1):
-                            if self.wait_time - self.loop_time >= 1.6:
+                            if self.wait_time - self.loop_time >= 1.:
                                 self.wait_time = rospy.get_time()
                                 self.rrr = 1
                                 ##self.roll_average = (self.max_roll + self.min_roll)/2
