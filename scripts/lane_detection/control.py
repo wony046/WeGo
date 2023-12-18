@@ -74,7 +74,7 @@ class LimoController:
         self.ppp = 0
         self.back = 0
         self.back1 = 0
-
+        self.roll_average = None
         self.roll = 0.0
         self.min_roll = None
         self.max_roll = None
@@ -402,50 +402,15 @@ class LimoController:
                                 self.min_roll = self.roll
                                 rospy.loginfo("self.min_roll = {}".format(self.min_roll))
                         else:
-                            rospy.loginfo(self.marker_distance)
                             drive_data.linear.x = self.BASE_SPEED
+                            self.roll_average = (self.max_roll + self.min_roll) / 2
+                            drive_data.angular.z = self.roll_average 
+
+
                 else:
                     drive_data.linear.x = self.BASE_SPEED
                     #rospy.loginfo("All Clear, Just Drive!")
-                '''    
-                elif (self.marker_1 == 1):
-                    rospy.logwarn("righting......")
-                    self.parking_start_time = rospy.get_time()
-                    while(self.parking_loop_time - self.parking_start_time <= 0.65):
-                        drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = 0.0
-                        self.drive_pub.publish(drive_data)
-                        self.parking_loop_time = rospy.get_time()
-
-                    self.parking_start_time = rospy.get_time()
-                    while(self.parking_loop_time - self.parking_start_time <= 1.5):
-                        drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = -1.5
-                        drive_data.angular.z = \
-                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                        self.drive_pub.publish(drive_data)
-                        self.parking_loop_time = rospy.get_time()
-                
-                elif (self.marker_2 == 1):
-                    rospy.logwarn("lefting......")
-                    self.parking_start_time = rospy.get_time()
-                    while(self.parking_loop_time - self.parking_start_time <= 0.65):
-                        drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = 0.0
-                        self.drive_pub.publish(drive_data)
-                        self.parking_loop_time = rospy.get_time()
-
-                    self.parking_start_time = rospy.get_time()
-                    while(self.parking_loop_time - self.parking_start_time <= 1.5):
-                        drive_data.linear.x = self.BASE_SPEED
-                        drive_data.angular.z = 1.5
-                        drive_data.angular.z = \
-                        math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                        self.drive_pub.publish(drive_data)
-                        self.parking_loop_time = rospy.get_time()
-                '''
-                
-
+               
             if self.limo_mode == "diff":
                 self.drive_pub.publish(drive_data)
             elif self.limo_mode == "ackermann":
