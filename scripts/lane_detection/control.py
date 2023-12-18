@@ -323,17 +323,20 @@ class LimoController:
                                 drive_data.angular.z = -1.4
 
                 elif (self.marker_3 == 1):
-                    if(self.back != 0):
-                        drive_data.angular.z = 0
-                        drive_data.linear.x = self.BASE_SPEED
-                    if (self.back == 0):
+                    if (self.parking == "back"):
                         self.parking_start_time = rospy.get_time() #지역변수
                         self.parking_loop_time = rospy.get_time() #지역변수
-                        
-                        if (abs(self.roll - self.roll_average) > 0.1):
+
+                        while(self.parking_loop_time - self.parking_start_time <= 10):
                             drive_data.linear.x = -self.BASE_SPEED
-                            drive_data.angular.z = -1.4
-                        
+                            drive_data.angular.z = -1.5
+                            drive_data.angular.z = \
+                            math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
+                            self.drive_pub.publish(drive_data)
+                            self.parking_loop_time = rospy.get_time()
+                            if (self.right_turn_start_roll - 69 >= self.roll):
+                                break
+
                         self.parking_start_time = rospy.get_time()
                         while(self.parking_loop_time - self.parking_start_time <= 2):
                             rospy.loginfo("parking......")
@@ -351,6 +354,28 @@ class LimoController:
                             self.parking_loop_time = rospy.get_time()
 
                         self.marker_3 = 0
+                        
+                    else:
+                        if (self.marker_distance >= 0.2):
+                            #rospy.logwarn(self.marker_distance)
+                            drive_data.linear.x = self.BASE_SPEED
+                            
+                            # 최대값 업데이트
+                            if self.max_roll is None or self.roll > self.max_roll:
+                                self.max_roll = self.roll
+                                #rospy.loginfo("self.max_roll = {}".format(self.max_roll))
+    
+                            # 최솟값 업데이트
+                            if self.min_roll is None or self.roll < self.min_roll:
+                                self.min_roll = self.roll
+                                #rospy.loginfo("self.min_roll = {}".format(self.min_roll))
+
+                            self.roll_average = (self.max_roll + self.min_roll) / 1.8
+                            
+                        else:
+                            drive_data.linear.x = self.BASE_SPEED
+                            drive_data.angular.z = self.roll_average - self.roll
+                            rospy.logwarn(drive_data.angular.z)
                         
                     
                 else:
