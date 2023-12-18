@@ -290,8 +290,7 @@ class LimoController:
                     self.marker_1_loop_time = rospy.get_time()
                     drive_data.linear.x = self.BASE_SPEED
                     rospy.logwarn(self.right_lane)
-                    if (self.right_lane == 1): #우측, 좌측 차선이 인식이 안 되면..
-                        self.right_turn == 1
+                    if (self.right_lane == 1 and self.right_turn == 0): #우측, 좌측 차선이 인식이 안 되면..
                         if ((self.marker_1_start_time - self.marker_1_loop_time) >= 0.65):
                             self.right_turn = 1
                         else:
@@ -307,10 +306,7 @@ class LimoController:
                             self.right_turn_start_roll = self.roll
                             self.right_turn_last_roll = self.roll #조금 전진한 후, 자신의 orientation 저장..
                             self.roll_return_right = 1
-                        else:
-                            pass                    
-                        
-                        if(abs(self.right_turn_start_roll - self.right_turn_last_roll) <= 68): #90도 회전이 약 70의 Imu roll값의 변화를 가르킴
+                        elif(abs(self.right_turn_start_roll - self.right_turn_last_roll) <= 68): #90도 회전이 약 70의 Imu roll값의 변화를 가르킴
                             rospy.loginfo("right_turning!")
                             drive_data.linear.x = self.BASE_SPEED
                             drive_data.angular.z = -1.5
