@@ -329,6 +329,7 @@ class LimoController:
                     if (self.back == 0):
                         self.parking_start_time = rospy.get_time() #지역변수
                         self.parking_loop_time = rospy.get_time() #지역변수
+                        
                         if (abs(self.roll - self.roll_average) > 0.1):
                             drive_data.linear.x = -self.BASE_SPEED
                             drive_data.angular.z = -1.4
