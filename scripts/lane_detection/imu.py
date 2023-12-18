@@ -13,8 +13,8 @@ class limo_imu:
         self.linear_acceleration_z = 0
         self.linear_orientation_z = 0
         self.pitch = 0
-        self.start_bump = math.pi / 36
-        self.last_bump = -(math.pi / 36)
+        self.start_bump = math.pi / 40
+        self.last_bump = -(math.pi / 40)
         self.loop_time = 0
         rospy.Subscriber("/imu", Imu, self.pitch_calculate_callback)
         self.imu_pub = rospy.Publisher("/limo/imu_pitch", String, queue_size=2)
@@ -26,7 +26,7 @@ class limo_imu:
         self.linear_acceleration_z = data.linear_acceleration.z
         self.linear_orientation_z = data.orientation.z
         self.imu_orientation_pub.publish(self.linear_orientation_z)
-        if ((self.linear_acceleration_x >= 1.9 or self.linear_acceleration_x <= -1.9) and self.linear_acceleration_z != 0):
+        if ((self.linear_acceleration_x >= 2 or self.linear_acceleration_x <= -2) and self.linear_acceleration_z != 0):
             self.pitch = math.atan(self.linear_acceleration_x / self.linear_acceleration_z)
             if (self.pitch >= self.start_bump or self.pitch <= self.last_bump):
                 #if self.wait_time - self.loop_time >= 0.5:
