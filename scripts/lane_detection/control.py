@@ -60,6 +60,7 @@ class LimoController:
         self.roll = None #Imu 센서의 roll값 초기화
         self.min_roll = None #Imu 센서의 최저 roll값 초기화
         self.max_roll = None #Imu 센서의 최대 roll값 초기화
+        self.lloop_time = 0
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
         srv = Server(controlConfig, self.reconfigure_callback)
         rospy.Subscriber("limo_status", LimoStatus, self.limo_status_callback)
