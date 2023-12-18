@@ -381,11 +381,11 @@ class LimoController:
                             math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                             self.drive_pub.publish(drive_data)
                             self.parking_loop_time = rospy.get_time()
-                            if (self.roll >=0.38 and self.roll <=0.42):
+                            if (self.roll >=0.38 and self.roll <=0.48):
                                 break
 
                         self.parking_start_time = rospy.get_time()
-                        while(self.parking_loop_time - self.parking_start_time <= 3):
+                        while(self.parking_loop_time - self.parking_start_time <= 2):
                             rospy.loginfo("parking......")
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = 0.0
@@ -417,7 +417,7 @@ class LimoController:
                                 self.min_roll = self.roll
                                 #rospy.loginfo("self.min_roll = {}".format(self.min_roll))
 
-                            self.roll_average = (self.max_roll + self.min_roll) / 1.8
+                            self.roll_average = (self.max_roll + self.min_roll) / 2.2
                             
                         else:
                             drive_data.linear.x = self.BASE_SPEED
