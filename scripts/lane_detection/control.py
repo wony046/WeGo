@@ -249,6 +249,7 @@ class LimoController:
             elif (self.bump == "bump"):
                 drive_data.linear.x = self.BASE_SPEED / 2
                 drive_data.angular.z = 0.0
+                rospy.logwarn("bumpbumpbumpbump")
                 
             else:
                 if (self.marker_0 == 1):
@@ -288,15 +289,18 @@ class LimoController:
                         drive_data.linear.x = self.BASE_SPEED
                         if (self.right_lane == 1):
                             drive_data.angular.z = 0
+                            '''
                             if self.roll >= self.max_roll:
                                 self.max_roll = self.roll
                             if self.roll <= self.min_roll:
                                 self.min_roll = self.roll
+                                '''
+                            self.roll_average = self.roll
                         if (self.right_lane == 1):
                             if self.wait_time - self.loop_time >= 1.8:
                                 self.wait_time = rospy.get_time()
                                 self.rrr = 1
-                                self.roll_average = (self.max_roll + self.min_roll)/2
+                                ##self.roll_average = (self.max_roll + self.min_roll)/2
                         else:
                             self.loop_time = rospy.get_time()
 
