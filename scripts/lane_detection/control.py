@@ -339,28 +339,7 @@ class LimoController:
 
                         self.marker_3 = 0
                         
-                    else:
-                        if (self.marker_distance >= 0.6):
-                            #rospy.logwarn(self.marker_distance)
-                            drive_data.linear.x = self.BASE_SPEED
-                            
-                            # 최대값 업데이트
-                            if self.max_roll is None or self.roll > self.max_roll:
-                                self.max_roll = self.roll
-                                #rospy.loginfo("self.max_roll = {}".format(self.max_roll))
-    
-                            # 최솟값 업데이트
-                            if self.min_roll is None or self.roll < self.min_roll:
-                                self.min_roll = self.roll
-                                #rospy.loginfo("self.min_roll = {}".format(self.min_roll))
-
-                            self.roll_average = (self.max_roll + self.min_roll) / 1.6
-                            
-                        else:
-                            drive_data.linear.x = self.BASE_SPEED
-                            drive_data.angular.z = self.roll_average - self.roll
-                            rospy.logwarn(drive_data.angular.z)
-
+                    
                 else:
                     drive_data.linear.x = self.BASE_SPEED
                     #rospy.loginfo("All Clear, Just Drive!")
