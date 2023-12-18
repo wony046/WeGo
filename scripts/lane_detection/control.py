@@ -56,8 +56,8 @@ class LimoController:
         self.right_count = 0
         self.rrr = 0
         self.left_trun = 0
-        self.roll_average = None #Imu 센서의 roll값을 받아 평균 계산
-        self.roll = None #Imu 센서의 roll값 초기화
+        self.roll_average = 0.0 #Imu 센서의 roll값을 받아 평균 계산
+        self.roll = 0.0 #Imu 센서의 roll값 초기화
         self.loop_time = 0
         self.lloop_time = 0
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
