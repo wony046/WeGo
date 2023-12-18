@@ -74,10 +74,10 @@ class LimoController:
         self.ppp = 0
         self.back = 0
         self.back1 = 0
-        self.roll_average = None
-        self.roll = 0.0
-        self.min_roll = None
-        self.max_roll = None
+        #self.roll_average = None
+        self.roll = None
+        #self.min_roll = None
+        #self.max_roll = None
         #self.bool = False
         #self.current_time = rospy.get_time()
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
@@ -380,6 +380,8 @@ class LimoController:
                             math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                             self.drive_pub.publish(drive_data)
                             self.parking_loop_time = rospy.get_time()
+                            if (self.roll >=0.6 and self.roll <=0.7):
+                                break
 
                         self.parking_start_time = rospy.get_time()
                         while(self.parking_loop_time - self.parking_start_time <= 1.5):
@@ -390,8 +392,9 @@ class LimoController:
                         
                     else:
                         if (self.marker_distance >= 0.6):
-                            rospy.logwarn(self.marker_distance)
+                            #rospy.logwarn(self.marker_distance)
                             drive_data.linear.x = self.BASE_SPEED
+                            '''
                             # 최대값 업데이트
                             if self.max_roll is None or self.roll > self.max_roll:
                                 self.max_roll = self.roll
@@ -401,11 +404,10 @@ class LimoController:
                             if self.min_roll is None or self.roll < self.min_roll:
                                 self.min_roll = self.roll
                                 rospy.loginfo("self.min_roll = {}".format(self.min_roll))
+                            '''
                         else:
                             drive_data.linear.x = self.BASE_SPEED
-                            self.roll_average = (self.max_roll + self.min_roll) / 2
-                            drive_data.angular.z = self.roll_average 
-
+                            drive_data.angular.z = self.roll
 
                 else:
                     drive_data.linear.x = self.BASE_SPEED
