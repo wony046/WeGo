@@ -75,7 +75,7 @@ class LimoController:
         self.back = 0
         self.back1 = 0
 
-        self.roll_z = 0.0
+        self.roll = 0.0
         self.min_roll = None
         self.max_roll = None
         #self.bool = False
@@ -192,7 +192,6 @@ class LimoController:
             roll 데이터 저장 및 계산
         '''
         self.roll = _data.data
-        self.roll_z = self.roll.orientation.z
 
     def lidar_warning_callback(self, _data):
         '''
@@ -394,13 +393,13 @@ class LimoController:
                             rospy.logwarn(self.marker_distance)
                             drive_data.linear.x = self.BASE_SPEED
                             # 최대값 업데이트
-                            if self.max_roll is None or self.roll_z > self.max_roll:
-                                self.max_roll = self.roll_z
+                            if self.max_roll is None or self.roll > self.max_roll:
+                                self.max_roll = self.roll
                                 rospy.loginfo(self.max_roll)
     
                             # 최솟값 업데이트
-                            if self.min_roll is None or self.roll_z < self.min_roll:
-                                self.min_roll = self.roll_z
+                            if self.min_roll is None or self.roll < self.min_roll:
+                                self.min_roll = self.roll
                                 rospy.loginfo(self.min_roll)
                         else:
                             rospy.loginfo(self.marker_distance)
