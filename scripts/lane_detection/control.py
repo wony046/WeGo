@@ -380,7 +380,7 @@ class LimoController:
                             math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                             self.drive_pub.publish(drive_data)
                             self.parking_loop_time = rospy.get_time()
-                            if (self.roll >=0.6 and self.roll <=0.68):
+                            if (self.roll >=0.4 and self.roll <=0.48):
                                 break
 
                         self.parking_start_time = rospy.get_time()
