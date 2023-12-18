@@ -299,7 +299,7 @@ class LimoController:
 
                     if self.rrr == 1:
                         if (self.right_lane == 0 and self.left_lane == 0):
-                            if self.wait_time - self.lloop_time >= :
+                            if self.wait_time - self.lloop_time >= 1:
                                 self.marker_1 = 0
                                 self.rrr = 0
                         else:
