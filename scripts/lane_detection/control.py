@@ -112,8 +112,8 @@ class LimoController:
                     else:
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
-                        if (self.marker_2 == 0):
-                            self.marker_22 = 0          
+                        if (self.marker_3 == 0):
+                            self.marker_33 = 0 
                 # id가 1번일 경우
                 if marker.id == 1 and self.marker_distance >= 0.1: #오른쪽
                     if self.marker_11 == 0:
@@ -122,8 +122,6 @@ class LimoController:
                     else:
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
-                        if (self.marker_2 == 0):
-                            self.marker_22 = 0  
                         if (self.marker_3 == 0):
                             self.marker_33 = 0     
                 # id가 3일 경우 
@@ -134,8 +132,6 @@ class LimoController:
                     else:
                         if (self.marker_1 == 0):
                             self.marker_11 = 0
-                        if (self.marker_2 == 0):
-                            self.marker_22 = 0  
                         if (self.marker_3 == 0):
                             self.marker_33 = 0    
                 
@@ -284,7 +280,7 @@ class LimoController:
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
-                            if (self.right_lane == 0 and self.left_lane == 0):
+                            if (self.left_lane == 0):
                                 if self.wait_time - self.lloop_time >= 0.5:
                                     self.marker_1 = 0
                                     self.rihgt_count = 1
@@ -303,7 +299,7 @@ class LimoController:
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
-                            if (self.right_lane == 0 and self.left_lane == 0):
+                            if (self.left_lane == 0):
                                 if self.wait_time - self.lloop_time >= 0.5:
                                     self.marker_1 = 0
                                     self.rihgt_count = 0
