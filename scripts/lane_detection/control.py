@@ -282,8 +282,8 @@ class LimoController:
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
-                            if (self.left_lane == 0 and self.right_lane):
-                                if self.wait_time - self.lloop_time >= 0.5:
+                            if (self.right_lane == 0):
+                                if self.wait_time - self.lloop_time >= 1:
                                     self.marker_1 = 0
                                     self.right_count = 1
                                     self.rrr = 0
@@ -302,7 +302,7 @@ class LimoController:
 
                         if self.rrr == 1:
                             if (self.left_lane == 0 and self.right_lane):
-                                if self.wait_time - self.lloop_time >= 0.5:
+                                if self.wait_time - self.lloop_time >= 1:
                                     self.marker_1 = 0
                                     self.right_count = 0
                                     self.rrr = 0
