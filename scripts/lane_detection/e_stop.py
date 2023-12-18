@@ -64,7 +64,7 @@ class LidarObjectDetector:
             if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < self.E_STOP_DISTANCE_METER:
                 #cnt += 1
                 cnt = cnt + 1
-            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.3):
+            if self.E_STOP_MIN_ANGLE_DEG <= angle <= self.E_STOP_MAX_ANGLE_DEG and 0.0 < _data.ranges[i] < (self.E_STOP_DISTANCE_METER * 1.2):
                 #cnt += 1
                 cnt1 = cnt1 + 1
         
