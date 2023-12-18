@@ -24,7 +24,7 @@ class limo_imu:
         #self.wait_time = rospy.get_time()
         self.linear_acceleration_x = data.linear_acceleration.x
         self.linear_acceleration_z = data.linear_acceleration.z
-        self.linear_orientation_z = data.linear_orientation.z
+        self.linear_orientation_z = data.orientation.z
         self.imu_orientation_pub.publish(self.linear_orientation_z)
         if ((self.linear_acceleration_x >= 1.9 or self.linear_acceleration_x <= -1.9) and self.linear_acceleration_z != 0):
             self.pitch = math.atan(self.linear_acceleration_x / self.linear_acceleration_z)
