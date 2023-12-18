@@ -310,6 +310,7 @@ class LimoController:
                 elif (self.marker_2 == 1): #마커 2번 감지 --> 좌회전
                     rospy.logwarn("Marker 2 dedect!")
                     self.marker_2_start_time = rospy.get_time()
+                    self.marker_2_loop_time = 0.0
                     drive_data.linear.x = self.BASE_SPEED
                     if (self.left_lane == 1): #우측 차선이 인식이 안 되면..
                         if ((self.marker_2_start_time - self.marker_2_loop_time) >= 0.8):
