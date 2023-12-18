@@ -6,7 +6,7 @@
 
 import rospy
 import os
-from std_msgs.msg import Int32, String
+from std_msgs.msg import Int32, String, Float32
 from geometry_msgs.msg import Twist
 from object_msgs.msg import ObjectArray
 from limo_base.msg import LimoStatus
@@ -47,15 +47,12 @@ class LimoController:
         #self.yolo_object_last_time = rospy.Time.now().to_sec()
         #self.bbox_size = [0, 0]
         self.limo_mode = "ackermann"
-
         self.dkdkdkdk = 0
-        
         self.stay = 0
         self.rihgt_stay = 0
         self.right = 0
         self.left = 0
         self.lane_time_ok = 0
-
         self.marker_0 = 0
         self.marker_1 = 0
         self.marker_2 = 0
@@ -70,19 +67,19 @@ class LimoController:
         self.marker_333 = 0
         self.markertime_count = 0
         self.marker_distance = 0
-
         self.rrr = 0
         self.lll = 0
         self.lll2 = 0
-
         self.bump = "not_bump"
-
         self.ppp = 0
         self.back = 0
         self.back1 = 0
+
+        self.roll_z = 0.0
+        self.min_roll = None
+        self.max_roll = None
         #self.bool = False
         #self.current_time = rospy.get_time()
-
         # /ar_pose_marker 토픽으로부터 AlvarMarkers 메시지를 수신하는 Subscriber 생성
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
         srv = Server(controlConfig, self.reconfigure_callback)
@@ -94,6 +91,7 @@ class LimoController:
         rospy.Subscriber("/limo/lidar_warning", String, self.lidar_warning_callback)
         rospy.Subscriber("/limo/imu_pitch", String, self.bump_detect_callback)
         rospy.Subscriber("/limo/parking", String, self.parking_callback)
+        rospy.Subscriber("/limo/imu_roll", Float32, self.imu_roll_callback)
         self.drive_pub = rospy.Publisher(rospy.get_param("~control_topic_name", "/cmd_vel"), Twist, queue_size=1)
         rospy.Timer(rospy.Duration(0.03), self.drive_callback)
 
@@ -188,7 +186,14 @@ class LimoController:
                     self.marker_11 = 0
                 if (self.marker_2 == 0):
                     self.marker_22 = 0
-               
+
+    def imu_roll_callback(self, _data):
+        '''
+            roll 데이터 저장 및 계산
+        '''
+        self.roll = _data.data
+        self.roll_z = self.roll.orientation.z
+
     def lidar_warning_callback(self, _data):
         '''
             장애물 유무 저장
@@ -326,9 +331,6 @@ class LimoController:
                             self.lloop_time = rospy.get_time()
                             drive_data.angular.z = -1.4
                             
-
-
-
                 elif (self.marker_2 == 1):
                     if self.marker_3 != 1:
                         #rospy.logwarn("Marker 1 dedect!")
@@ -388,8 +390,31 @@ class LimoController:
                         self.marker_3 = 0
                         
                     else:
-                        drive_data.linear.x = self.BASE_SPEED
-                    
+                        if (self.marker_distance >= 0.6):
+                            rospy.logwarn(self.marker_distance)
+                            drive_data.linear.x = self.BASE_SPEED
+                            # 최대값 업데이트
+                            if self.max_roll is None or self.roll_z > self.max_roll:
+                                self.max_roll = self.roll_z
+                                rospy.loginfo(self.max_roll)
+    
+                            # 최솟값 업데이트
+                            if self.min_roll is None or self.roll_z < self.min_roll:
+                                self.min_roll = self.roll_z
+                                rospy.loginfo(self.min_roll)
+                        else:
+                            rospy.loginfo(self.marker_distance)
+                            drive_data.linear.x = self.BASE_SPEED
+
+
+
+
+
+                
+                else:
+                    drive_data.linear.x = self.BASE_SPEED
+                    #rospy.loginfo("All Clear, Just Drive!")
+                '''    
                 elif (self.marker_1 == 1):
                     rospy.logwarn("righting......")
                     self.parking_start_time = rospy.get_time()
@@ -425,10 +450,8 @@ class LimoController:
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
                         self.drive_pub.publish(drive_data)
                         self.parking_loop_time = rospy.get_time()
-
-                else:
-                    drive_data.linear.x = self.BASE_SPEED
-                    #rospy.loginfo("All Clear, Just Drive!")
+                '''
+                
 
             if self.limo_mode == "diff":
                 self.drive_pub.publish(drive_data)
