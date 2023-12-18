@@ -395,12 +395,12 @@ class LimoController:
                             # 최대값 업데이트
                             if self.max_roll is None or self.roll > self.max_roll:
                                 self.max_roll = self.roll
-                                rospy.loginfo(self.max_roll)
+                                rospy.loginfo("self.max_roll = {}".format(self.max_roll))
     
                             # 최솟값 업데이트
                             if self.min_roll is None or self.roll < self.min_roll:
                                 self.min_roll = self.roll
-                                rospy.loginfo(self.min_roll)
+                                rospy.loginfo("self.min_roll = {}".format(self.min_roll))
                         else:
                             rospy.loginfo(self.marker_distance)
                             drive_data.linear.x = self.BASE_SPEED
@@ -458,10 +458,10 @@ class LimoController:
                 if drive_data.linear.x == 0:
                     drive_data.angular.z = 0
                 else:
-                    rospy.loginfo(drive_data.angular.z)
+                    rospy.loginfo("drive_data.angular.z before tan = {}".format(drive_data.angular.z))
                     drive_data.angular.z = \
                         math.tan(drive_data.angular.z / 2) * drive_data.linear.x / self.LIMO_WHEELBASE
-                    rospy.logwarn(drive_data.angular.z)
+                    rospy.logwarn("drive_data.angular.z tan = {}".format(drive_data.angular.z))
                     # 2를 나눈 것은 Differential과 GAIN비율을 맞추기 위함
                     self.drive_pub.publish(drive_data)
                     #rospy.loginfo(drive_data.angular.z)
