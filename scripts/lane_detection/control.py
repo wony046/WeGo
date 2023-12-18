@@ -63,6 +63,7 @@ class LimoController:
         self.loop_time = 0
         self.lloop_time = 0
         self.back = 0 
+        self.markercount = 0
         rospy.Subscriber("/ar_pose_marker", AlvarMarkers, self.marker_CB)
         srv = Server(controlConfig, self.reconfigure_callback)
         rospy.Subscriber("limo_status", LimoStatus, self.limo_status_callback)
@@ -273,10 +274,14 @@ class LimoController:
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
                         if (self.right_lane == 1):
-                            if self.wait_time - self.loop_time >= 0.65:
+                            if self.markercount == 0:
+                                self.markercount = 1
+                            if self.markercount == 2:
                                 self.wait_time = rospy.get_time()
                                 self.rrr = 1
                         else:
+                            if self.markercount == 1:
+                                self.markercount = 2
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
@@ -285,6 +290,7 @@ class LimoController:
                                     self.marker_1 = 0
                                     self.right_count = 1
                                     self.rrr = 0
+                                    self.markercount = 0
                             else:
                                 self.lloop_time = rospy.get_time()
                                 drive_data.angular.z = -1.4
