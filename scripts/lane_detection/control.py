@@ -320,7 +320,7 @@ class LimoController:
                     if (self.left_trun == 1):
                         rospy.loginfo("left_turn start!")
                         self.left_turn_start_roll = self.roll #조금 전진한 후, 자신의 orientation 저장..
-                        self.left_turn_last_roll = None
+                        self.left_turn_last_roll = 0.0
                         while(abs(self.left_turn_start_roll - self.left_turn_last_roll) >= 68): #90도 회전이 약 70의 Imu roll값의 변화를 가르킴
                             drive_data.linear.x = self.BASE_SPEED
                             drive_data.angular.z = 1.5
