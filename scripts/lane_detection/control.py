@@ -260,14 +260,15 @@ class LimoController:
                 
             else:
                 if (self.marker_0 == 1):
-                    self.loop_time = rospy.get_time()
-                    self.wait_time = rospy.get_time()
-                    while (self.wait_time - self.loop_time <= 3):
-                        drive_data.linear.x = 0.0
-                        drive_data.angular.z = 0.0
+                    if self.marker_distance <= 0.55 and self.bump != "bump":
+                        self.loop_time = rospy.get_time()
                         self.wait_time = rospy.get_time()
-                    self.marker_0 = 0
-                    ##rospy.logwarn("marker 0 is there , Stop!")                   
+                        while (self.wait_time - self.loop_time <= 5.5):
+                            drive_data.linear.x = 0.0
+                            drive_data.angular.z = 0.0
+                            self.wait_time = rospy.get_time()
+                        self.marker_0 = 0
+                        ##rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
                      
