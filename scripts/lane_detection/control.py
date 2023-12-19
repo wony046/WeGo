@@ -292,6 +292,7 @@ class LimoController:
                                 if self.markercount == 2:
                                     self.markercount = 3
                             if self.markercount == 3: 
+                                self.right_count = 1
                                 self.marker_1 = 0
                                 self.rrr = 0
                                 self.markercount = 0
@@ -304,12 +305,6 @@ class LimoController:
                         drive_data.linear.x = self.BASE_SPEED
                         if (self.right_lane == 1):
                             drive_data.angular.z = 0
-                            '''
-                            if self.roll >= self.max_roll:
-                                self.max_roll = self.roll
-                            if self.roll <= self.min_roll:
-                                self.min_roll = self.roll
-                                '''
                             if self.rrr != 1:
                                 self.roll_average = self.roll
                         if (self.right_lane == 1):
@@ -328,11 +323,12 @@ class LimoController:
                                     self.rrr = 0
                                     self.marker_3 = 1
                             else:
-                                rospy.logwarn("000000000000000000000")  
+                                  
                                 self.lloop_time = rospy.get_time()
                                 drive_data.angular.z = -1.4
 
                 elif (self.marker_3 == 1):
+                    rospy.logwarn("000000000000000000000")
                     if (self.parking == "back"):
                         self.parking_start_time = rospy.get_time() #지역변수
                         self.parking_loop_time = rospy.get_time() #지역변수
