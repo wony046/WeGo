@@ -255,6 +255,7 @@ class LimoController:
             elif (self.bump == "bump"):
                 drive_data.linear.x = self.BASE_SPEED / 2
                 drive_data.angular.z = 0.0
+                self.stay = 0
                 rospy.logwarn("bumpbumpbumpbump")
                 
             else:
@@ -274,7 +275,9 @@ class LimoController:
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
                         if (self.right_lane == 1):
-                            if self.wait_time - self.loop_time >= 0.65:
+                            if self.rrr != 1:
+                                self.roll_average = self.roll
+                            if self.wait_time - self.loop_time >= 0.655:
                                 self.wait_time = rospy.get_time()
                                 self.rrr = 1
                                 
@@ -282,25 +285,18 @@ class LimoController:
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
-                            if (self.right_lane == 0 and self.left_lane == 0):
-                                if self.markercount == 0:
-                                    self.markercount = 1 
-                            if (self.right_lane == 1 ):
-                                if self.markercount == 1:
-                                    self.markercount = 2
-                            if (self.right_lane == 0 ):
-                                if self.markercount == 2:
-                                    self.markercount = 3
-
-
-                            if self.markercount == 3: 
-                                self.right_count = 1
-                                self.marker_1 = 0
-                                self.rrr = 0
-                                self.markercount = 0
-                            if self.markercount != 3:
-                                
+                            self.wait_time_time = rospy.get_time()
+                            if (abs(self.roll - self.roll_average) < 0.78 and abs(self.roll - self.roll_average) > 0.62):
+                                if self.wait_time - self.lloop_time >= 0.4:
+                                    self.right_count = 1
+                                    self.marker_1 = 0
+                                    self.rrr = 0
+    
+                            else:
+                                  
+                                self.lloop_time = rospy.get_time()
                                 drive_data.angular.z = -1.4
+                       
                     else:
                         rospy.logwarn("++++++++++++++++++++++++-")  
                         self.wait_time = rospy.get_time()
