@@ -291,13 +291,15 @@ class LimoController:
                             if (self.right_lane == 0 ):
                                 if self.markercount == 2:
                                     self.markercount = 3
+
+
                             if self.markercount == 3: 
                                 self.right_count = 1
                                 self.marker_1 = 0
                                 self.rrr = 0
                                 self.markercount = 0
-                            else:
-                                self.lloop_time = rospy.get_time()
+                            if self.markercount != 3:
+                                
                                 drive_data.angular.z = -1.4
                     else:
                         rospy.logwarn("++++++++++++++++++++++++-")  
