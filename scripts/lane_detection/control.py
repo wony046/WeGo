@@ -269,7 +269,7 @@ class LimoController:
                     rospy.logwarn("marker 0 is there , Stop!")                   
                 
                 elif (self.marker_1 == 1):
-                    rospy.logwarn("--------------------------")  
+                     
                     if self.right_count == 0:
                         self.wait_time = rospy.get_time()
                         drive_data.linear.x = self.BASE_SPEED
@@ -316,6 +316,7 @@ class LimoController:
                             self.loop_time = rospy.get_time()
 
                         if self.rrr == 1:
+                            self.wait_time_time = rospy.get_time()
                             if (abs(self.roll - self.roll_average) < 0.78 and abs(self.roll - self.roll_average) > 0.62):
                                 if self.wait_time - self.lloop_time >= 0.4:
                                     self.marker_1 = 0
