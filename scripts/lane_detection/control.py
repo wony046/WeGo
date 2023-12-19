@@ -345,7 +345,7 @@ class LimoController:
                                 break
 
                         self.parking_start_time = rospy.get_time()
-                        while(self.parking_loop_time - self.parking_start_time <= 0.5):
+                        while(self.parking_loop_time - self.parking_start_time <= 1):
                             ##rospy.loginfo("parking......")
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = 0.0
@@ -358,7 +358,7 @@ class LimoController:
                             drive_data.linear.x = 0.0
                             drive_data.angular.z = 0.0
                             self.drive_pub.publish(drive_data)
-                            self.parking_loop_time = rospy.get_time()
+                            
 
                         self.marker_3 = 0
                         
