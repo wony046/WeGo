@@ -256,13 +256,15 @@ class LimoController:
                 drive_data.linear.x = self.BASE_SPEED / 2
                 drive_data.angular.z = 0.0
                 self.stay = 0
-                rospy.logwarn("bumpbumpbumpbump")
+                
                 
             else:
                 if (self.marker_0 == 1):
                     self.loop_time = rospy.get_time()
                     self.wait_time = rospy.get_time()
-                    if self.marker_distance <= 0.5 and self.bump != "bump":
+                    if self.bump != "bump":
+                        self.loop_time = rospy.get_time()
+                        self.wait_time = rospy.get_time()
                         while (self.wait_time - self.loop_time <= 5.5):
                             drive_data.linear.x = 0.0
                             drive_data.angular.z = 0.0
@@ -343,7 +345,7 @@ class LimoController:
                                 break
 
                         self.parking_start_time = rospy.get_time()
-                        while(self.parking_loop_time - self.parking_start_time <= 2):
+                        while(self.parking_loop_time - self.parking_start_time <= 0.5):
                             ##rospy.loginfo("parking......")
                             drive_data.linear.x = -(self.BASE_SPEED / 2)
                             drive_data.angular.z = 0.0
